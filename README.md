@@ -24,4 +24,4 @@
        ii. '***sheet 2***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
        iii. '***sheet 3***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
        v. '***sheet 4***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
- :simple smile:
+ :simple_smile:
