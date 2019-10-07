@@ -1,4 +1,5 @@
-# Dynamic-Linear-Models-for-Heterogenous-Panels
+# Dynamic-Linear-Models-for-Heterogenous-Panels 
+
 1. The folder 'MC_code' provide the simulation code for LS estimate and IV estimate:
   1.1 'IV_MG.m': Simulation for Instrument variable mean group estimator on the model without factor structure.
   1.2 'IV_MG_factor.m': Simulation for Instrument variable mean group estimator on the model with factor structure(but ignore).
