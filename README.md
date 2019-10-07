@@ -9,17 +9,17 @@
   
   
 3. The folder 'Report' provide the draft of simulation results.   
-   2.1 The file  '__Model  without factor structure.xlsx__' :  
+   2.1 The file  '__Model  without factor structure.xlsx__' :LSMG and IVMG  
         i. '***sheet 1***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
         ii. '***sheet 2***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
         iii. '***sheet 3***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
         V. '***sheet 4***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
-  2.2 The file  '__Model with factor structure 1.xlsx__' :  
+  2.2 The file  '__Model with factor structure 1.xlsx__' :LSMG and IVMG  
        i. '***sheet 1***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
        ii. '***sheet 2***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
        iii. '***sheet 3***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
        v. '***sheet 4***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
-  2.3 The file  '__Model with factor structure 2.xlsx__' :  
+  2.3 The file  '__Model with factor structure 2.xlsx__' :Norkutes' (2019) method  
        i. '***sheet 1***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
        ii. '***sheet 2***': ARDL(1,0); 'phi' homogeneous; 'beta' heterogenous.  
        iii. '***sheet 3***': ARDL(1,0); 'phi' heterogenous; 'beta' heterogenous.  
