@@ -1,7 +1,7 @@
-rep = 1000;  
-list_T = [25 50 100 200]; 
-list_N = [25 50 100 200];  
-list_phi= [0.25]; 
+rep = 500;  
+list_T = [25 50 100]; 
+list_N = [25 50 100];  
+list_phi= [0.8]; 
 rho=[0];
 k=1;   % number of regressors
 m_x=2; % number of factors of regressor
@@ -16,47 +16,47 @@ rmse_beta=zeros(size(list_T,2), size(list_N,2));
 
 for idx_phi=1:size(list_phi,2)     
 phi= list_phi(idx_phi);  
-  b=1-phi; 
+  %b=1-phi; % beta
+  b=3;
 for idx_T=1:size(list_T,2)    
 T0 = list_T(idx_T);             
  
 for idx_N=1:size(list_N,2)   
 N = list_N(idx_N);
-Dis_T=50;
-
+Dis_T=50;  % discard first 50 time series
 TT= (T0+1)+Dis_T;    
-
-IVs_MG=zeros(1+k,rep);   % 1+k by rep
+IVs_MG=zeros(1+k,rep);   % 1+k by rep 
 sml=1;         
-%while sml<=rep
-parfor sml=1:rep
-    
+while sml<=rep
+%parfor sml=1:rep
+
 y=zeros(N,TT);
 x=zeros(N,TT);
-phi_i= phi+  (0.8)*rand([1,N]); 
-%phi_i= phi*ones(1,N);
-%beta_i=b*ones(1,N);
-beta_i=b+0.5+(0.5)*rand([1,N]); 
-theta_i=[phi_i;beta_i];   % 1+k by N
-eta_y=normrnd(0,1/m_y,[m_y,N]);  % factor loading; N by m
+phi_i= phi+  (0.5)*rand([1,N]);  % phi heterogeneous
+%phi_i= phi*ones(1,N);  % phi homogenous 
+%beta_i=b*ones(1,N);   % beta homogenous 
+beta_i=b+0.5+(0.5)*rand([1,N]); % beta heterogeneous
+theta_i=[phi_i;beta_i];   % 1+k by N  
+eta_y=normrnd(0,1/m_y,[N, m_y]);  % factor loading; N by m
 fy=zeros(m_y,TT);  % creat a space for saving data factor
 fy(:,1)=zeros(m_y,1);   % setting the initial factor
 for t=2:TT
    fy(:,t)= 0.5*fy(:,t-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_y,1]); % m by TT
 end 
 fy1=fy(:,TT-T0+1:TT); % m by T0; F_y
-MF_y=eye(T0)-fy1'*((fy1*fy1')^(-1))*fy1;  % MF_y 
+%MF_y=eye(T0)-fy1'*((fy1*fy1')^(-1))*fy1;  % MF_y ;T0 by T0
 
-eta_x=normrnd(0,1/m_x,[m_x,N]);  % factor loading; N by m
+
+eta_x=normrnd(0,1/m_x,[N, m_x]);  % factor loading; m by N
 fx=zeros(m_x,TT);  % creat a space for saving data factor
 fx(:,1)=zeros(m_x,1);   % setting the initial factor
 for t=2:TT
-   fx(:,t)= 0.5*fx(:,t-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_x,1]); % m by TT
+   fx(:,t)= 0.5*fx(:,t-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_x,1]); % x's factor; m by TT
 end 
-fx1=fx(:,TT-T0:TT-1); % m by T0; F_x,-1
-fx2=fx(:,TT-T0+1:TT); % m by T0; F_x
-MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x,-1 
-MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x
+fx1=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
+fx2=fx(:,TT-T0+1:TT); % m by T0; F_(x)
+MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x,-1 T0 by T0
+MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x T0 by T0
 
 
 
@@ -65,47 +65,46 @@ y(:,1)=zeros(N,1);
 x(:,1)=zeros(N,1);  
 for tt=2:TT
     for ii=1:N
-  x(ii,tt)=rho*(x(ii,tt-1))+eta_x(:,ii)'*fx(:,tt)+normrnd(0,1);     % N by TT
+  x(ii,tt)=rho*(x(ii,tt-1))+eta_x(ii,:)*fx(:,tt)+normrnd(0,1);     % N by TT
  %x(ii,tt)=normrnd(0,1);     % N by TT
-  y(ii,tt)= ([y(ii,tt-1),x(ii,tt)])*theta_i(:,ii)+eta_y(:,ii)'*fy(:,tt)+normrnd(0,1);    % N by TT
+  y(ii,tt)= ([y(ii,tt-1),x(ii,tt)])*theta_i(:,ii)+eta_y(ii,:)*fy(:,tt)+normrnd(0,1);    % N by TT
     end
 end
 
  
 
-y_NT=y(:,TT-T0:TT); % dicard first 50 time series N by T0+1 
-y_NT1=y_NT(:,1:T0);
-y_NT2=y_NT(:,2:T0+1);   %  N by T0
 
-x_NT=x(:,TT-T0:TT); %  N by T0+1
-MF_W_it=zeros(N,T0,1+k);  % N by T0 by 1+k 
-MF_W_it(:,:,1)=y_NT1*MF_y;  %  y_{i,-1}; N by T0 
-MF_W_it(:,:,2)=x_NT(:,2:T0+1)*MF_y; %  N by T0
-MF_yt= y_NT2*MF_y;  %  N by T0
+y_NT=y(:,TT-T0:TT); % dicard first 50 time series for y ; N by T0+1 
+y_NT1=y_NT(:,1:T0);    % y_(i,-1) ; N by T0
+y_NT2=y_NT(:,2:T0+1);   % y_(i,T) N by T0
 
 
-MF_Z_it=zeros(N,T0,1+k);
-MF_Z_it(:,:,1)=x_NT(:,2:T0+1)*MF_x2; 
-MF_Z_it(:,:,2)=x_NT(:,1:T0)*MF_x1;
+x_NT=x(:,TT-T0:TT); %  dicard first 50 time series for x ; N by T0+1
+x_NT1=x_NT(:,2:T0);   % x_(i,-1) ; N by T0
+x_NT2=x_NT(:,2:T0+1);   % x_(i, T); N by T0
+
+W_it=zeros(N,T0,1+k);  % N by T0 by 1+k  
+W_it(:,:,1)=y_NT1;  %  y_{i,-1}; N by T0   
+W_it(:,:,2)=x_NT2; %  x_(i,T); N by T0  
+ 
+Z_it=zeros(N,T0,2*k);           % N by T0 by 2k
+Z_it(:,:,1)=x_NT(:,2:T0+1)*MF_x2;   % N by T0 
+Z_it(:,:,2)=x_NT(:,1:T0)*MF_x1;      % N by T0 
+
 
 theta_IV=zeros(1+k,N); 
-W=zeros(1+k,T0,N);
-Z=zeros(1+k,T0,N);
+W=zeros(T0,1+k,N);
+Z=zeros(T0,1+k,N);
 for iii=1:N
-W(:,:,iii)=[MF_W_it(iii,:,1);MF_W_it(iii,:,2)]; % 1+k by T0
-Z(:,:,iii)=[MF_Z_it(iii,:,1);MF_Z_it(iii,:,2)];  % 1+k by T0
+W(:,:,iii)=[W_it(iii,:,1)', W_it(iii,:,2)']; % T0 by 1+k
+Z(:,:,iii)=[Z_it(iii,:,1)', Z_it(iii,:,2)'];  %  T0 by 1+k
+theta_IV(:,iii)=(((Z(:,:,iii)'*MF_x2*W(:,:,iii))' /T0)*((Z(:,:,iii)'*MF_x2*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*MF_x2*W(:,:,iii)) /T0))^(-1)*(((Z(:,:,iii)'*MF_x2*W(:,:,iii))' /T0)*((Z(:,:,iii)'*MF_x2*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*MF_x2*y_NT2(iii,:)')/T0));
 
-%theta_IV(1,iii)= ((W(1,:,iii)*Z(1,:,iii)')^(-1))*(Z(1,:,iii)*y_NT(iii,2:T0+1)');
-%theta_IV(2,iii)= ((W(2,:,iii)*Z(2,:,iii)')^(-1))*(Z(2,:,iii)*y_NT(iii,2:T0+1)');
-
-theta_IV(:,iii)=((Z(:,:,iii)*W(:,:,iii)')^(-1))*(Z(:,:,iii)*MF_yt(iii,:)');
-
-%theta_LS(:,iii)= ((Z*W')^(-1))*(Z*W(1,:,iii)');
 end
 
 IVs_MG(:,sml)=nanmean(theta_IV,2); % LS_MG
 
-%sml=sml+1;
+sml=sml+1;
 end
 
 mean_phi= nanmean(IVs_MG(1,:));
