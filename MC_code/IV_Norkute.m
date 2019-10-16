@@ -41,9 +41,9 @@ N = list_N(idx_N);
 Dis_T=50;  % discard first 50 time series
 TT= (T0+1)+Dis_T;    
 IVs_MG=zeros(1+k,rep);   % 1+k by rep 
-sml=1;         
-while sml<=rep
-%parfor sml=1:rep
+%sml=1;         
+%while sml<=rep
+parfor sml=1:rep
 
 
 y=zeros(N,TT);
@@ -195,7 +195,7 @@ end
 
 IVs_MG(:,sml)=nanmean(theta_IV,2); % LS_MG
 
-sml=sml+1;
+%sml=sml+1;
 end
 
 mean_phi= nanmean(IVs_MG(1,:));
