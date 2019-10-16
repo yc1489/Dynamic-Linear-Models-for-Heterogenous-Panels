@@ -8,6 +8,7 @@ b=[b1,b2];
 rho=[0];
 pi_u=0.25;
 SNR=4;
+rho_gamma_1s=0;
 k=2;   % number of regressors
 m_x=2; % number of factors of regressor
 my=1;
@@ -41,9 +42,9 @@ N = list_N(idx_N);
 Dis_T=50;  % discard first 50 time series
 TT= (T0+1)+Dis_T;    
 IVs_MG=zeros(1+k,rep);   % 1+k by rep 
-%sml=1;         
-%while sml<=rep
-parfor sml=1:rep
+sml=1;         
+while sml<=rep
+%parfor sml=1:rep
 
 
 y=zeros(N,TT);
@@ -113,8 +114,8 @@ for g=1:N
 gamma_1= normrnd(0,1);
 gamma_2= normrnd(0,1);
 gamma_3= normrnd(0,1);
-gamma_11= 0.5*gamma_3 +sqrt(1-0.5^(2))*normrnd(0,1) ;
-gamma_12= 0.5*gamma_3 +sqrt(1-0.5^(2))*normrnd(0,1) ;
+gamma_11= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^(2))*normrnd(0,1) ;
+gamma_12= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^(2))*normrnd(0,1) ;
 gamma_21= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
 gamma_22= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
 Gamma_i(:,:,g)=Gamma0+[gamma_1, gamma_11,gamma_21;gamma_2, gamma_12, gamma_22; gamma_3, 0, 0];
@@ -195,7 +196,7 @@ end
 
 IVs_MG(:,sml)=nanmean(theta_IV,2); % LS_MG
 
-%sml=sml+1;
+sml=sml+1;
 end
 
 mean_phi= nanmean(IVs_MG(1,:));
