@@ -7,13 +7,17 @@ b2=1;
 b=[b1,b2];
 rho=[0];
 pi_u=0.25;
+SNR=4;
 k=2;   % number of regressors
 m_x=2; % number of factors of regressor
 my=1;
 m_y=m_x+my; % number of factors of y
 xi_es=sqrt((pi_u/(1-pi_u))*m_y);
+
 rho_mu=0.5;
+rho_v=0.5;
 rho_b=0.4;
+xi_ev=xi_es^(2)*(SNR-(rho_v^(2)/(1-rho_v^(2))))*((b1^(2)+b2^(2))/(1-rho_v^(2)))^(-1);
 
 bias_mean_phi=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); 
 bias_mean_beta1=zeros(size(list_T,2), size(list_N,2)); 
@@ -51,7 +55,7 @@ v_x=zeros(k,N,TT);
 v_x(:,:,1)=zeros(k,N,1);  
 for ttt=2:TT
     for iiii=1:N
-v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,xi_es^(2),[k,1]); % k by N by TT
+v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,xi_ev,[k,1]); % k by N by TT
     end 
 end
 bar_v_i=zeros(k,N);
@@ -61,7 +65,7 @@ end
 bar_v_i=bar_v_i*(TT)^(-1); % k by N
 bar_v=sum(bar_v_i,2)*(N)^(-1); % k by 1
 diff_bar_v=bar_v_i-bar_v*ones(1,N); % k by N
-mean_sqr_diff_bar_v=sqrt( sum((diff_bar_v.^(2)),2)); % k by 1
+mean_sqr_diff_bar_v=sqrt( (sum((diff_bar_v.^(2)),2)*N^(-1))); % k by 1
 Xi_b=zeros(k,N);
 for kk=1:k
     for iiiii=1:N
@@ -71,7 +75,7 @@ end
 
 
 
-beta_i=b'*ones(1,N)+(sqrt(0.5^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
+beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
 
@@ -99,10 +103,13 @@ fy(:,1)=zeros(m_y,1);   % setting the initial factor
 for t=2:TT
    fy(:,t)= 0.5*fy(:,t-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_y,1]); % m_y by TT 
 end 
-fy1=fy(:,TT-T0+1:TT); % m_y by T0; F_y
+%fy1=fy(:,TT-T0+1:TT); % m_y by T0; F_y
 
 
 Gamma0=[0.25, 0.25, -1; 0.5,-1,0.25; 0.5, 0, 0];
+
+Gamma_i=zeros(m_y,m_y,N);
+for g=1:N
 gamma_1= normrnd(0,1);
 gamma_2= normrnd(0,1);
 gamma_3= normrnd(0,1);
@@ -110,9 +117,6 @@ gamma_11= 0.5*gamma_3 +sqrt(1-0.5^(2))*normrnd(0,1) ;
 gamma_12= 0.5*gamma_3 +sqrt(1-0.5^(2))*normrnd(0,1) ;
 gamma_21= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
 gamma_22= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
-
-Gamma_i=zeros(m_y,m_y,N);
-for g=1:N
 Gamma_i(:,:,g)=Gamma0+[gamma_1, gamma_11,gamma_21;gamma_2, gamma_12, gamma_22; gamma_3, 0, 0];
 end
 
@@ -142,7 +146,7 @@ for tt=2:TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
  
-  y(ii,tt)= a_i(ii,:)+([y(ii,tt-1),x(:,ii,tt)'])*theta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(xi_es*sqrt(sqrt((chi2rnd(2)/2)*(tt/TT)))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+  y(ii,tt)= a_i(ii,:)+([y(ii,tt-1),x(:,ii,tt)'])*theta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(xi_es*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
 end
 
@@ -162,9 +166,9 @@ x_NT1_1=zeros(N, T0);
 x_NT2_1=zeros(N, T0);
 for it=1:T0
 x_NT1(:,it)=x_NT(1,:,it+1);   % x_(i,-1) ; N by T0 
-x_NT2(:,it)=x_NT(2,:,it+1);   % x_(i, T); k by N by T0
+x_NT2(:,it)=x_NT(2,:,it+1);   % x_(i, T); N by T0
 x_NT1_1(:,it)=x_NT(1,:,it);   % x_(i,-1) ; N by T0
-x_NT2_1(:,it)=x_NT(2,:,it);   % x_(i, T); k by N by T0
+x_NT2_1(:,it)=x_NT(2,:,it);   % x_(i, T);  N by T0
 end
 
 W_it=zeros(N,T0,1+k);  % N by T0 by 1+k  
@@ -209,13 +213,10 @@ std_beta2(idx_T, idx_N) = nanstd(IVs_MG(3,:));
 
 rmse_phi(idx_T, idx_N,idx_phi) = sqrt( nanmean( (IVs_MG(1,:)-phi).^2) ); 
 rmse_beta1(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(2,:)-b1).^2) ); 
-rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b1).^2) );
+rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b2).^2) );
 
 end
 end
 end
 filename = 'IV_MG_df1.mat';
 save(filename)
-
-
-
