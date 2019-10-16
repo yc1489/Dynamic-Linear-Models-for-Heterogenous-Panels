@@ -65,7 +65,7 @@ mean_sqr_diff_bar_v=sqrt( sum((diff_bar_v.^(2)),2)); % k by 1
 Xi_b=zeros(k,N);
 for kk=1:k
     for iiiii=1:N
-Xi_b(kk,iiii)= (diff_bar_v(kk,iiii))/(mean_sqr_diff_bar_v(kk));  % k by N
+Xi_b(kk,iiiii)= (diff_bar_v(kk,iiiii))/(mean_sqr_diff_bar_v(kk));  % k by N
     end
 end
 
@@ -74,12 +74,6 @@ end
 beta_i=b'*ones(1,N)+(sqrt(0.5^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
-
-
-
-
-
-
 
 
 a_i=zeros(N,1);
@@ -209,13 +203,11 @@ std_beta2(idx_T, idx_N) = nanstd(IVs_MG(3,:));
 
 rmse_phi(idx_T, idx_N,idx_phi) = sqrt( nanmean( (IVs_MG(1,:)-phi).^2) ); 
 rmse_beta1(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(2,:)-b1).^2) ); 
-rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b1).^2) );
+rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b2).^2) );
 
 end
 end
 end
 filename = 'IV_MG_df1.mat';
 save(filename)
-
-
 

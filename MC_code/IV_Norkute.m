@@ -76,12 +76,6 @@ beta_i=b'*ones(1,N)+(sqrt(0.5^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta
 theta_i=[phi_i;beta_i];   % 1+k by N  
 
 
-
-
-
-
-
-
 a_i=zeros(N,1);
 for a=1:N
 a_i(a,:)=normrnd(0,(1-phi_i(:,a))^(2)); % interactive effect for y; N by 1
@@ -209,13 +203,11 @@ std_beta2(idx_T, idx_N) = nanstd(IVs_MG(3,:));
 
 rmse_phi(idx_T, idx_N,idx_phi) = sqrt( nanmean( (IVs_MG(1,:)-phi).^2) ); 
 rmse_beta1(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(2,:)-b1).^2) ); 
-rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b1).^2) );
+rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b2).^2) );
 
 end
 end
 end
 filename = 'IV_MG_df1.mat';
 save(filename)
-
-
 
