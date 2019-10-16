@@ -50,8 +50,8 @@ phi_i= phi+eta_rho_i;  % phi heterogeneous; 1 by N
 v_x=zeros(k,N,TT);
 v_x(:,:,1)=zeros(k,N,1);  
 for ttt=2:TT
-    for iii=1:N
-v_x(:,iii,ttt)=0.5*v_x(:,iii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,xi_es^(2),[k,1]); % k by N by TT
+    for iiii=1:N
+v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,xi_es^(2),[k,1]); % k by N by TT
     end 
 end
 bar_v_i=zeros(k,N);
@@ -64,12 +64,12 @@ diff_bar_v=bar_v_i-bar_v*ones(1,N); % k by N
 mean_sqr_diff_bar_v=sqrt( sum((diff_bar_v.^(2)),2)); % k by 1
 Xi_b=zeros(k,N);
 for kk=1:k
-    for iiii=1:N
-Xi_b(kk,iiii)= (diff_bar_v(kk,iiii))/(mean_sqr_diff_bar_v(kk));  % k by N
+    for iiiii=1:N
+Xi_b(kk,iiiii)= (diff_bar_v(kk,iiiii))/(mean_sqr_diff_bar_v(kk));  % k by N
     end
 end
 
-% beta_i=b+0.5+(0.5)*rand([1,N]); % beta heterogeneous
+
 
 beta_i=b'*ones(1,N)+(sqrt(0.5^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
 
