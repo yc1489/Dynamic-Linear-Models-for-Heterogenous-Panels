@@ -77,7 +77,7 @@ end
 
 
 
-beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_bi); % k by N
+beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
 
@@ -216,5 +216,5 @@ rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b2).^2) );
 end
 end
 end
-filename = 'IV_MG_df1.mat';
+filename = 'IV_MG_df3.mat';
 save(filename)
