@@ -8,7 +8,10 @@ b=[b1,b2];
 rho=[0];
 pi_u=0.75;
 SNR=4;
-rho_gamma_1s=0;
+Mu1=1;
+Mu2=-0.5;
+A=0.5;
+rho_gamma_1s=0.5;
 k=2;   % number of regressors
 m_x=2; % number of factors of regressor
 my=1;
@@ -42,6 +45,12 @@ N = list_N(idx_N);
 Dis_T=50;  % discard first 50 time series
 TT= (T0+1)+Dis_T;    
 IVs_MG=zeros(1+k,rep);   % 1+k by rep 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+randn('state', 12345678) ;
+rand('state', 1234567) ;
+   RandStream.setGlobalStream (RandStream('mcg16807','seed',34));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 sml=1;         
 while sml<=rep
 %parfor sml=1:rep
@@ -77,7 +86,7 @@ end
 
 
 
-beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
+beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_bi); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
 
@@ -86,15 +95,16 @@ theta_i=[phi_i;beta_i];   % 1+k by N
 
 a_i=zeros(N,1);
 for a=1:N
-a_i(a,:)=normrnd(0,(1-phi_i(:,a))^(2)); % interactive effect for y; N by 1
+a_i(a,:)=A+normrnd(0,(1-phi_i(:,a))^(2)); % interactive effect for y; N by 1
 end
 
-mu_i=zeros(N,1);
+mu1_i=zeros(N,1);
+mu2_i=zeros(N,1);
 for mu=1:N
-mu_i(mu,:)=rho_mu*a_i(mu,:)+sqrt(1-rho_mu^(2))*normrnd(0,(1-phi_i(:,mu))^(2)); % interactive effect for x; N by 1
+mu1_i(mu,:)=Mu1+rho_mu*a_i(mu,:)+sqrt(1-rho_mu^(2))*normrnd(0,(1-phi_i(:,mu))^(2)); % interactive effect for x; N by 1
+mu2_i(mu,:)=Mu2+rho_mu*a_i(mu,:)+sqrt(1-rho_mu^(2))*normrnd(0,(1-phi_i(:,mu))^(2)); % interactive effect for x; N by 1
 end
-
-
+mu_i=[mu1_i,mu2_i]; % N by k
 
 fy=zeros(m_y,TT);  % creat a space for saving data factor
 fy(:,1)=zeros(m_y,1);   % setting the initial factor
@@ -140,7 +150,7 @@ for tt=2:TT
         
    eta_x(:,:,ii)= [Gamma_i(1,2,ii),Gamma_i(1,3,ii);Gamma_i(2,2,ii),Gamma_i(2,3,ii)];     
    
- x(:,ii,tt)=mu_i(ii,:)*ones(k,1)+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
+ x(:,ii,tt)=mu_i(ii,:)'+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
  
@@ -216,5 +226,5 @@ rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (IVs_MG(3,:)-b2).^2) );
 end
 end
 end
-filename = 'IV_MG_df3.mat';
+filename = 'IVMG_rho_gamma_1s0.5.mat';
 save(filename)
