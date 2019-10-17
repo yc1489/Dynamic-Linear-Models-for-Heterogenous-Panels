@@ -6,7 +6,7 @@ b1=3;
 b2=1;
 b=[b1,b2];
 rho=[0];
-pi_u=0.25;
+pi_u=0.75;
 SNR=4;
 rho_gamma_1s=0;
 k=2;   % number of regressors
@@ -51,6 +51,7 @@ y=zeros(N,TT);
 x=zeros(k,N,TT);
 
 eta_rho_i=-0.25+(0.5)*rand([1,N]); % 1 by N
+eta_rho_bi=-sqrt(3)+2*sqrt(3)*rand([1,N]);
 phi_i= phi+eta_rho_i;  % phi heterogeneous; 1 by N
 v_x=zeros(k,N,TT);
 v_x(:,:,1)=zeros(k,N,1);  
@@ -76,13 +77,9 @@ end
 
 
 
-beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_i); % k by N
+beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*ones(k,1)*eta_rho_bi); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
-
-
-
-
 
 
 
@@ -151,7 +148,7 @@ for tt=2:TT
     end
 end
 
- 
+  
 
 
 y_NT=y(:,TT-T0:TT); % dicard first 50 time series for y ; N by T0+1 
