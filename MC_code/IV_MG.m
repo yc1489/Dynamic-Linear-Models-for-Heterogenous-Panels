@@ -8,8 +8,7 @@ b2=1;
 rho_b=0.4;
 b=[b1,b2];
 k=2;   % number of regressors
-bias_mean_phi=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); 
-bias_mean_beta1=zeros(size(list_T,2), size(list_N,2)); 
+bias_mean_phi=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); bias_mean_beta1=zeros(size(list_T,2), size(list_N,2)); 
 bias_mean_beta2=zeros(size(list_T,2), size(list_N,2)); 
 std_phi=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));  
 std_beta1=zeros(size(list_T,2), size(list_N,2));  
@@ -104,7 +103,7 @@ Z=zeros(T0,2*k,N);
 for iii=1:N
 W(:,:,iii)=[W_it(iii,:,1)', W_it(iii,:,2)',W_it(iii,:,3)']; % T0 by 1+k
 Z(:,:,iii)=[Z_it(iii,:,1)', Z_it(iii,:,2)', Z_it(iii,:,3)',Z_it(iii,:,4)'];  %  T0 by 2k
-theta_IV(:,iii)=(((Z(:,:,iii)'*MF_x2*W(:,:,iii))' /T0)*((Z(:,:,iii)'*MF_x2*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*MF_x2*W(:,:,iii)) /T0))^(-1)*(((Z(:,:,iii)'*MF_x2*W(:,:,iii))' /T0)*((Z(:,:,iii)'*MF_x2*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*MF_x2*y_NT2(iii,:)')/T0));
+theta_IV(:,iii)=(((Z(:,:,iii)'*W(:,:,iii))' /T0)*((Z(:,:,iii)'*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*W(:,:,iii)) /T0))^(-1)*(((Z(:,:,iii)'*W(:,:,iii))' /T0)*((Z(:,:,iii)'*Z(:,:,iii))/T0)^(-1)*((Z(:,:,iii)'*y_NT2(iii,:)')/T0));
 
 end
 
@@ -118,8 +117,8 @@ mean_beta1= nanmean(IVMG(2,:));
 mean_beta2= nanmean(IVMG(3,:));
 
 bias_mean_phi(idx_T, idx_N, idx_phi) = mean_phi - phi;
-bias_mean_beta1(idx_T, idx_N )=mean_beta - b1;
-bias_mean_beta2(idx_T, idx_N)=mean_beta - b2;
+bias_mean_beta1(idx_T, idx_N )=mean_beta1 - b1;
+bias_mean_beta2(idx_T, idx_N)=mean_beta2 - b2;
 
 std_phi(idx_T, idx_N, idx_phi) = nanstd(IVMG(1,:));
 std_beta1(idx_T, idx_N) = nanstd(IVMG(2,:));
