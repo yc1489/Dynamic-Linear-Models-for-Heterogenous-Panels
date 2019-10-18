@@ -33,6 +33,11 @@ Dis_T=50;
 TT= (T0+1)+Dis_T;    
 
 LS_MG=zeros(1+k,rep);   % 1+k by rep
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+randn('state', 12345678) ;
+rand('state', 1234567) ;
+   RandStream.setGlobalStream (RandStream('mcg16807','seed',34));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sml=1;         
 while sml<=rep
 %parfor sml=1:rep
