@@ -101,7 +101,7 @@ end
 
 mean_phi= nanmean(LS_MG(1,:));
 mean_beta1= nanmean(LS_MG(2,:));
-mean_beta2= nanmean(LS_MG(2,:));
+mean_beta2= nanmean(LS_MG(3,:));
 bias_mean_phi(idx_T, idx_N, idx_phi) = mean_phi - phi;
 bias_mean_beta1(idx_T, idx_N )=mean_beta1 - b1;
 bias_mean_beta2(idx_T, idx_N )=mean_beta2 - b2;
