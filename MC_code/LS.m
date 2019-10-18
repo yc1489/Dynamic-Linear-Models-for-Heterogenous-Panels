@@ -119,7 +119,7 @@ std_beta2(idx_T, idx_N) = nanstd(LS_MG(3,:));
 
 rmse_phi(idx_T, idx_N,idx_phi) = sqrt( nanmean( (LS_MG(1,:)-phi).^2) ); 
 rmse_beta1(idx_T, idx_N) = sqrt( nanmean( (LS_MG(2,:)-b1).^2) ); 
-rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (LS_MG(3,:)-b1).^2) ); 
+rmse_beta2(idx_T, idx_N) = sqrt( nanmean( (LS_MG(3,:)-b2).^2) ); 
 
 end
 end
