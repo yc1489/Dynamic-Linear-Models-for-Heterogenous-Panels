@@ -59,17 +59,17 @@
 \newpage
 \tableofcontents
 \newpage
-\section{Model, asymptotic property of LS and IV estimator}
+\section{Model, asymptotic property of IV estimator}
 \subsection{The models and Assumptions}
 \subsubsection{Fixed effects model}
 Consider the dynamic heterogeneous panels data model with fixed effects:
 \begin{align}
 \begin{split}
 y_{i,t}&=\alpha_{i}+\phi_{i} y_{i,t-1}+ \boldsymbol{x}^{'}_{i,t}\boldsymbol{\beta}_{i}+u_{i,t}, \,\, for\,\,i=1,\ldots N;\,t=1,\ldots,T\, , \\
-&= \boldsymbol{w}^{'}_{i,t}\boldsymbol{\theta}+ \alpha_{i}+u_{i,t}, \label{1}
+&= \boldsymbol{w}^{'}_{i,t}\boldsymbol{\theta}_{i}+ \alpha_{i}+u_{i,t}, \label{1}
 \end{split}
 \end{align}
-where $\boldsymbol{x}_{i,t}$ and $\boldsymbol{\beta}_{i}$ are $k \times 1$ vectors and $\boldsymbol{w}_{i,t}=\left(\phi_{i}, \boldsymbol{\beta}^{'}_{i} \right)^{'}$ is a $\left(1+k\right) \times 1$ vector.
+where $\boldsymbol{x}_{i,t}$ and $\boldsymbol{\beta}_{i}$ are $k \times 1$ vectors, $\boldsymbol{\theta}_{i}=\left(\phi_{i}, \boldsymbol{\beta}^{'}_{i} \right)^{'}$ and $\boldsymbol{w}_{i,t}=\left(y_{i,t-1}, \boldsymbol{x}^{'}_{i,t} \right)^{'}$ is a $\left(1+k\right) \times 1$ vector.
 Stacking the $T$ observations for each $i$, we have
 \begin{align}
 \boldsymbol{y}_{i}=\boldsymbol{W}_{i}\boldsymbol{\theta}_{i}+ \alpha_{i}\boldsymbol{\iota}_{T}+ \boldsymbol{u}_{i}, \label{2}
@@ -138,8 +138,127 @@ $x_{i,t}$ and $u_{i,t}$ are independently distributed for all $t$ and $s$ .
 \end{myAssu}
 
 
-\subsection{IV estimator}
-We use current and lagged values of $\boldsymbol{x}_{i}$ as instruments, as
+
+
+
+
+
+\subsection{IV estimation method and asymptotic property}
+\citet{Norkute:2019} propose an IV estimator in dynamic heterogeneous panel data model. 
+They use current and lagged values of $\boldsymbol{x}_{i}$ as instruments, as
+\begin{align}
+\boldsymbol{Z}_{i,t}=\left( \boldsymbol{x}_{i}, \boldsymbol{x}_{i,-1} \right)^{'},
+\end{align}
+where $\boldsymbol{Z}_{i}$ is $T \times  2k$ vector. \\
+
+\begin{myAssu}
+$\boldsymbol{A}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{A}}_{i,T}$ has full column rank, $\boldsymbol{B}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{B}}_{i,T}$ and $\boldsymbol{\Sigma}_{i}=\plim_{T \to \infty} T^{-1}\boldsymbol{Z}^{'}_{i}\boldsymbol{u}_{i} \boldsymbol{u}_{i}^{'}\boldsymbol{Z}$ has positive definite, uniformly, where $\tilde{\boldsymbol{A}}_{i,T}= \frac{1}{T}\boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{W}}^{b}_{i}$ and $\tilde{\boldsymbol{B}}_{i,T}= \frac{1}{T}\tilde{\boldsymbol{Z}}^{'}_{i}\boldsymbol{Z}_{i}$, \\
+where $b = 1$ corresponds to the fixed effects model while $b = 2$ corresponds to the trend models.
+\end{myAssu}
+
+Then, the IV estimator can be expressed as
+\begin{align}
+\boldsymbol{\hat{\theta}}^{b}_{IV,i}=\left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{g}}_{i,T},
+\end{align}
+where
+\begin{align}
+\tilde{\boldsymbol{g}}_{i,T}=\frac{1}{T}\boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{y}}^{b}_{i},
+\end{align}
+ and $\tilde{\boldsymbol{W}}^{b}_{i}=\left( \tilde{w}^{b}_{i,1},\ldots, \tilde{w}^{b}_{i,T} \right)^{'}$ is $T \times 2k$ matrix
+
+From above equation, we have
+\begin{align}
+\sqrt{T}\left(\boldsymbol{\hat{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i} \right)=\left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\left(T^{-1/2}  \boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \right)
+\end{align}
+Then, the property of $T^{-1/2}  \boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{u}}_{i} $ is given by following proposition.\\
+\begin{myProp}
+Under above assumptions, as $\left(N, T \right)\overset{j}{\to} \infty$ such that $N/T \to c$ with $0 < c<\infty $, for each $i$, we have
+\begin{align}
+\begin{split}
+&N^{-1} \boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{u}}_{i}\overset{p}{\to} \boldsymbol{0},  \\
+&\,\,\,\,and\,\,\,\,\, \\
+&T^{-1/2}  \boldsymbol{Z}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{i} \right).
+\end{split}
+\end{align}
+\end{myProp}
+
+Thus, IV  estimator, $\boldsymbol{\theta}^{b}_{IV, i}$ is $\sqrt{T}$ consistent to $\boldsymbol{\theta}_{i}$ and this estimator does not have Nickell's bias. Then, we have following theorem\\
+$\mathbf{Theorem \,\,1}$ \\
+As $\left(N,T \right)\to \infty $ such that $N/T \to c$ with $0< c< \infty$. for each $i$,
+\begin{align}
+\sqrt{T}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i}  \right)\overset{d}{\to} N \left(\boldsymbol{0},\,\left(\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}\boldsymbol{A}_{i} \right)^{-1}\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}   \boldsymbol{\Sigma}_{i}\boldsymbol{B}_{i}^{-1} \boldsymbol{A}_{i}\left(\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}\boldsymbol{A}_{i} \right)\right).
+\end{align}
+
+
+\subsubsection{Mean group IV estimator }
+Now, we define the mean group estimator of $\boldsymbol{\theta}$:
+\begin{align}
+\hat{\boldsymbol{\theta}}^{b}_{IVMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}^{b}_{IVi}.
+\end{align}
+And we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}_{IVMG}$, as
+\begin{align}
+\hat{\boldsymbol{\theta}}^{b}_{IVMG}-\boldsymbol{\theta}=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}- \boldsymbol{\theta}\right)=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}- \boldsymbol{\theta}_{i}\right)+\frac{1}{N}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i},
+\end{align}
+where
+\begin{align}
+\begin{split}
+\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}- \boldsymbol{\theta}_{i}\right)&=\frac{1}{N}\sum^{N}_{i=1} \left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\left(T^{-1}  \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \right) \\
+&= O_{p}\left(\delta^{-2}_{NT} \right),
+\end{split}
+\end{align}
+where $\delta_{NT}=\min \{\sqrt{N},\,\sqrt{T} \}$.
+We note that $\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i}=O_{p}\left(N^{-1/2} \right)$, if $\delta_{NT}^{-(2+\varsigma)}\to 0$ for any $\varsigma >0$, we have
+\begin{align}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}^{b}_{IVMG}-\boldsymbol{\theta}  \right)=\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i}+o_{p} \left(1 \right).
+\end{align}
+
+And the variance estimator of $\hat{\boldsymbol{\theta}}_{IVMG}$ is given by
+\begin{align}
+\hat{\boldsymbol{\Sigma}}_{IV,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}^{b}_{IV,i}- \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}^{b}_{IV,i}- \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)^{'}. \label{44}
+\end{align}
+Follow \citet{Norkute:2019}, we can show that $\hat{\boldsymbol{\Sigma}}_{IV,\lambda}$ is consistent and it does not have small $T$ bias.
+Firstly, we decompose $(\ref{44})$ as
+\begin{align}
+\begin{split}
+&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}^{b}_{IV,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}^{b}_{IV,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)^{'}= \\
+& \sum^{N}_{i=1} \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i} \right)^{'}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i}  \right) -\\
+&N\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right). \label{45}
+\end{split}
+\end{align}
+Then we can show consistent of $\hat{\boldsymbol{\Sigma}}^{b}_{IV,\lambda}$ as
+\begin{align}
+\begin{split}
+&\hat{\boldsymbol{\Sigma}}^{b}_{IV,\lambda}-\boldsymbol{\Sigma}_{IV,\lambda}=
+ \frac{1}{N-1}\sum^{N}_{i=1}\left( \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}-\boldsymbol{\Sigma}_{IV,\lambda}\right) +\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i} \right)^{'} \\
+&+\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\frac{1}{N-1}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}^{b}_{IV,i}-\boldsymbol{\theta}_{i}  \right) -\\
+&\frac{N}{N-1}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)  =o_{p}(1).
+\end{split}
+\end{align}
+
+
+
+
+
+
+Then, we can see that the asymptotic property of $\hat{\boldsymbol{\theta}}_{IVMG} $ as,
+\begin{align}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}^{b}_{IVMG}-\boldsymbol{\theta}  \right)\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{IV,\lambda} \right).
+\end{align}
+
+
+
+
+
+
+
+
+\section{Construction optimal instruments}
+How to select optimal instruments is important issue in empirical studies.
+\citet{Stephen:2001}, \citet{Kuersteiner:2010}, \citet{Ryo:2011}, \citet{Kang:2019} and \citet{Seojeong:2019} propose different methods to construct optimal instruments.
+Here, we try to apply model average approach by \citet{Kuersteiner:2010} in here.  
+
+
+If we can observed long past periods variables, we have many instruments. In this case we define our instruments, as
 \begin{align}
 \boldsymbol{Z}^{(j)}_{i}=\left( \boldsymbol{x}_{i,\cdot}, \boldsymbol{x}_{i,-1},\ldots, \boldsymbol{x}_{i,-j} \right)^{'},
 \end{align}
@@ -158,326 +277,18 @@ If we can observe long lagged length from data, we have many instruments that ca
 In empirical study, researchers do not use all past variables as instruments because there are trade off between efficiency and bias.
 But we have not clearly know that the effect of using long lagged length  IV estimator in heterogeneous dynamic panel data model. And how to select the instruments to balance the bias and efficiency.
 
-\citet{Kuersteiner:2010} provided model averaging two stage least squares estimator to balance the bias and efficiency. We try to follow this method to construct the optimal instruments. We define a weighting vector $\boldsymbol{W}=\left(w_{1}, \ldots, w_{j} \right)^{'}$. Then, we can weight $\boldsymbol{P}^{(j)}_{i}$ as
+\citet{Kuersteiner:2010} provided model averaging two stage least squares estimator to balance the bias and efficiency. We try to follow this method to construct the optimal instruments. We define a weighting vector $\boldsymbol{H}=\left(h_{1}, \ldots, h_{j} \right)^{'}$. Then, we can weight $\boldsymbol{P}^{(j)}_{i}$ as
 \begin{align}
-\boldsymbol{P}\left(\boldsymbol{W} \right)= \sum^{J}_{j=1}w_{j} \boldsymbol{P}^{(j)}_{i},
+\boldsymbol{P}\left(\boldsymbol{H} \right)= \sum^{J}_{j=1}h_{j} \boldsymbol{P}^{(j)}_{i},
 \end{align}
 where $J$ is maximum number of lagged variables that we can observed. 
-Our goal is choosing $\boldsymbol{W}$ to minimize the approximate mean square error. 
-
-
-
-\subsection{Asymptotic property of LS estimator}
-
-
-Based on heterogenous dynamic panel data model $(\ref{1})$, we can obtain fixed effect estimator as
-\begin{align}
-\hat{\boldsymbol{\theta}}_{LS,i}=
-\begin{pmatrix}
-\hat{\phi}_{i} \\
-\hat{\beta}_{i}
-\end{pmatrix}=
-\begin{pmatrix}
-\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
-\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
-\end{pmatrix}^{-1}
-\begin{pmatrix}
-\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{y}_{i,t}}{T} \\
-\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t}}{T}
-\end{pmatrix},
-\end{align}
-
-where $\tilde{y}_{i,t}=y_{i,t}-\bar{y}_{i}$, $\tilde{y}_{i,t-1}=y_{i,t-1}-\bar{y}_{i,-1}\iota_{T}$ and $\tilde{x}_{i,t}=x_{i,t}-\bar{x}_{i}$ with $\bar{y}_{i}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t}$, $\bar{y}_{i,-1}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t-1}$,  $\bar{x}_{i}=\frac{1}{T}\sum^{T}_{t=1}x_{i,t}$.  Under equation $(\ref{1})$, we have
-\begin{align}
-\begin{pmatrix}
-\hat{\phi}_{i}-\phi_{i} \\
-\hat{\beta}_{i}-\beta_{i}
-\end{pmatrix}=
-\begin{pmatrix}
-\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
-\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
-\end{pmatrix}^{-1}
-\begin{pmatrix}
-\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \\
-\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{u}_{i,t}}{T}
-\end{pmatrix},
-\end{align}
-where $\tilde{u}_{i,t}$ is $u_{i,t}-\bar{u}_{i}$ with $\bar{u}_{i}=\frac{1}{T}\sum^{T}_{t=1}u_{i,t}.$
-
-
-Now, we can investigate asymptotic bias by taking the probability limit as
-\begin{align}
-A^{(1)}_{\phi i}=\plim_{T  \rightarrow \infty}\left( \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \right). \label{11}
-\end{align}
-Then $A^{(1)}_{i}$ can be taken expectations as
-\begin{align}
-\begin{split}
-A^{(1)}_{\phi i}&=E\left(y_{i,t-1}-\bar{y}_{i,-1} \right) \left(u_{i,t}-\bar{u}_{i} \right) \\
-&= E\left( y_{i,t-1}u_{i,t}\right) - E\left( y_{i,t-1} \bar{u}_{i}  \right)-E\left(\bar{y}_{i,-1}   u_{i,t}\right)+E\left(\bar{y}_{i,-1}  \bar{u}_{i}\right),
-\end{split}
-\end{align}
-where $E\left( y_{i,t-1}u_{i,t}\right)=0$.
-
-And we assume $y_{i,t}$ has started from a long time period in the past, so we have
-\begin{align}
-y_{i,t}=\frac{\alpha_{i}}{\left(1-\phi_{i} \right)}+\sum^{\infty}_{s=0}\beta_{i}\phi^{s}_{i}x_{i,t -s}+\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s},
-\end{align}
-
-Then, we have
-\begin{align}
-\begin{split}
-A^{(1)}_{\phi i}&=-E\left( \left(\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right) \left(\frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right)  \right)-E\left(\frac{u_{i,t}}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)+ \\
-&\left(\frac{1}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)\left( \frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right). \label{12}
-\end{split}
-\end{align}
- Hence, from above equation, we have
- \begin{equation}
-\begin{split}
-A^{(1)}_{\phi i}=&-\dfrac{1}{T} E\left\{  \left( u_{i,t-1}+u_{i,t-2}\phi_{i}^{1}+u_{i,t-3}\phi_{i}^{2}+\ldots\right)\left(u_{i,1}+\ldots+u_{i,t-1}+u_{i,t}+\ldots+u_{i,T}\right) \right\} -\\
- &\dfrac{1}{T} E \left\{  u_{i,t}\sum^{T}_{s=1}\left( u_{i,s-1}\phi_{i}^{0}+u_{i,s-2}\phi_{i}^{1}+\ldots+u_{i,s-t-1}\phi_{i}^{t}+\ldots+u_{i,s-T-1}\phi_{i}^{T}+\ldots \right)  \right\}  + \\
- +& \dfrac{1}{T} E\{ \left( \sum^{T}_{s=1}u_{i,s-1}\phi_{i}^{0}+\sum^{T}_{s=1}u_{i,s-2}\phi_{i}^{1}+\ldots+\sum^{T}_{s=1}u_{i,s-t-1}\phi_{i}^{t}+\ldots
-+\sum^{T}_{s=1}u_{is-T-1}\phi_{i}^{T}+\ldots \right)\\
- &\left(\dfrac{1}{T}\sum^{T}_{s=1}u_{i,s}\right) \} \\
- =&-\dfrac{\sigma_{u}^{2}}{T}\dfrac{(1-\phi_{i}^{t-1})}{1-\phi_{i}}-\dfrac{\sigma^{2}_{u}}{T}\dfrac{(1-\phi_{i}^{T-t})}{(1-\phi_{i})}+\dfrac{\sigma^{2}_{u}}{T} \left( \dfrac{1}{1-\phi_{i}}-\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})^{2}}\right) \\
- =&-\dfrac{\sigma_{u}^{2}}{T(1-\phi_{i})}\left( 1-\phi_{i}^{t-1}-\phi_{i}^{T-t}+\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})}  \right).
- \end{split}
-\end{equation}
-
-
-Therefore, we can see the bias of $\hat{\phi}_{i}$ is $O\left(T^{-1}\right)$.
-
-To be more compact ,we can rewrite the model as,
-\begin{align}
-\tilde{\boldsymbol{y}}_{i}=\tilde{\boldsymbol{W}}_{i}\boldsymbol{\theta}_{i}+\tilde{\boldsymbol{u}}_{i},
-\end{align}
-where $\tilde{\boldsymbol{y}}_{i}=\left(\tilde{\boldsymbol{y}}_{i,1},\ldots, \tilde{\boldsymbol{y}}_{i,T}  \right)^{'}$ is $T \times 1$ vector,  $\tilde{\boldsymbol{W}}_{i}=\left( \tilde{\boldsymbol{w}}_{i,1},\ldots, \tilde{\boldsymbol{w}}_{i,T} \right)^{'}$ is $T \times 2$ matrix and $\tilde{\boldsymbol{u}}_{i}=\left(\tilde{\boldsymbol{u}}_{i,1}, \ldots, \tilde{\boldsymbol{u}}_{i,T} \right)$ is $T \times 1$ vector with $\tilde{\boldsymbol{w}}_{i,t}=\left(y_{i,t-1}-\bar{y}_{i,-1}, x_{i,t}-\bar{x}_{i}  \right)^{'}$, for $t=1,\ldots, T$ and $i=1,\ldots, N.$
-
-Also, we define our interested parameter as
-\begin{align}
-\left(\phi_{i},\beta_{i}  \right)^{'}=\boldsymbol{\theta}_{i}=\boldsymbol{\theta}+\boldsymbol{\lambda}_{i},
-\end{align}
-where $\boldsymbol{\lambda}_{i}\overset{i.i.d.}{\sim} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\lambda} \right).$
-The lest square estimator, $\hat{\boldsymbol{\theta}}_{LS,i}$, can be expressed as
-\begin{align}
-\hat{\boldsymbol{\theta}}_{LS,i}=\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T}. \label{13}
-\end{align}
-
-From above discussion and assumptions, we have following theorem \\
-\begin{myTheo}
-\begin{align}
-\sqrt{T}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}\right) \overset{d}{\to} N \left(\boldsymbol{0}, \boldsymbol{Q}_{i}^{-1}\boldsymbol{\Sigma}_{LS,i}\boldsymbol{Q}_{i}^{-1}  \right),
-\end{align}
-where $\boldsymbol{\Sigma}_{LS,i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{u}}_{i} \tilde{\boldsymbol{u}}^{'}_{i}  \tilde{\boldsymbol{W}}_{i} $ and $\boldsymbol{Q}_{i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{W}}_{i}$
-\end{myTheo}
-
-
-
-\subsubsection{Mean group LS estimator }
-Now, we define the mean group estimator of $\boldsymbol{\theta}$:
-\begin{align}
-\hat{\boldsymbol{\theta}}_{LSMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSi}.
-\end{align}
-And we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}_{LSMG}$, as
-\begin{align}
-\begin{split}
-\hat{\boldsymbol{\theta}}_{LSMG}&=N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T} \\
-&=\bar{\boldsymbol{\theta}}+N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T},
-\end{split}
-\end{align}
-where $\bar{\boldsymbol{\theta}}=N^{-1}\sum^{N}_{i=1}\boldsymbol{\theta}_{i}.$
-For fixed $N$ and large $T$, we have
-\begin{align}
-\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}+ N^{-1}\sum^{N}_{i=1}\plim_{T \to \infty}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1}\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)
-\end{align}
- Then, from section $1.1$, we know that $\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)=O_{p}(1)$. Thus,  we can obtain
-\begin{align}
-\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}.
-\end{align}
-When $N \to \infty$ and $T \to \infty$ and by the law of large numbers, we can see that
-\begin{align}
-\plim_{T \to \infty, N \to \infty}\hat{\boldsymbol{\theta}}_{LSMG}=\boldsymbol{\theta}.
-\end{align}
-
-And the variance estimator of $\hat{\boldsymbol{\theta}}_{LSMG}$ is given by
-\begin{align}
-\hat{\boldsymbol{\Sigma}}_{LS,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}.
-\end{align}
-
-We show that $\hat{\boldsymbol{\Sigma}}_{LS,\lambda}$ is consistent when $N \to \infty$ and $T \to \infty.$
-\begin{align}
-\begin{split}
-&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}=\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right) \right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}\\
-&+\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}\\
-&-\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'} \\
-&-\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}. \label{20}
-\end{split}
-\end{align}
-
-Taking expectation on equation $(\ref{20})$, we have
-\begin{align}
-\begin{split}
-&E\left( \sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'} \right)=
- \sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+
-\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG}+  \\
-&\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}-
-\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LS,i}+
-\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)\hat{\boldsymbol{\theta}}^{'}_{LS,i}-
-\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}- \\
-&\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LSMG}+
-\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LS,i}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}-
-\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'} = \\
-&\sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)-N E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)+\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}
-\end{split}
-\end{align}
-and
-\begin{align}
-E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)=\frac{1}{N^{2}} \sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right).
-\end{align}
-
-And, we also have
-\begin{align}
-E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)=\frac{1}{N^{2}}\left( \sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+ \sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right) \right).
-\end{align}
-Then,
-\begin{align}
-\begin{split}
-&E\left( \sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'} \right)= \\
-&\left(1-\frac{1}{N} \right)\sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+ \sum^{N}_{i=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right). \label{24}
-\end{split}
-\end{align}
-From above equation $(\ref{24})$, we can observe the bias term as,
-\begin{align}
-\aleph=\sum^{N}_{i=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right). \label{25}
-\end{align}
-
- Taking expectation on equation $(26)$, we have
-\begin{align}
-E\left( \hat{\boldsymbol{\theta}}_{LS,i} \right)=\boldsymbol{\theta}+E \left(b_{i} \right),
-\end{align}
-From equation $(\ref{25})$, we know that
- \begin{align}
-\aleph=\sum^{N}_{i=1}E \left(b_{i}\right) E\left(b^{'}_{i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(b_{i}\right) E\left(b^{'}_{j} \right).
- \end{align}
-When $T \to \infty$, $\aleph=0$.
-Therefore, we have following theorem \\
-
-\begin{myTheo}
-When $(T,N) \overset{j}{\to} \infty$ such that $N/T \to c$ with $0<c< \infty$,
-\begin{enumerate}
-\item \begin{align}
-\sqrt{N}\left(\hat{\boldsymbol{\theta}}_{LSMG}-\boldsymbol{\theta}  \right)\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{LS,\lambda} \right).
-\end{align}
-\item \begin{align}
-\hat{\boldsymbol{\Sigma}}_{LS,\lambda} \overset{p}{\to}  \boldsymbol{\Sigma}_{LS,\lambda}
-\end{align}
-where
-\begin{align}
- \hat{\boldsymbol{\Sigma}}_{LS,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}.
-\end{align}
-\end{enumerate}
-\end{myTheo}
-
-
-
-\subsection{Asymptotic property of IV estimator}
-We use current and lagged values of $\boldsymbol{x}_{i}$ as instruments, as
-\begin{align}
-\tilde{\boldsymbol{Z}}_{i,t}=\left( \tilde{\boldsymbol{x}}_{i}, \tilde{\boldsymbol{x}}_{i,-1} \right)^{'},
-\end{align}
-where $\tilde{\boldsymbol{Z}}_{i}$ is $T \times  2$ vector. \\
-
-\begin{myAssu}
-$\boldsymbol{A}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{A}}_{i,T}$ has full column rank, $\boldsymbol{B}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{B}}_{i,T}$ and $\boldsymbol{\Sigma}_{i}=\plim_{T \to \infty} T^{-1}\boldsymbol{Z}^{'}_{i}\boldsymbol{u}_{i} \boldsymbol{u}_{i}^{'}\boldsymbol{Z}$ has positive definite, uniformly, where $\tilde{\boldsymbol{A}}_{i,T}= \frac{1}{T}\tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{W}}_{i}$ and $\tilde{\boldsymbol{B}}_{i,T}= \frac{1}{T}\tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{Z}}_{i}$ \\
-\end{myAssu}
-
-Then, the IV estimator can be expressed as
-\begin{align}
-\boldsymbol{\hat{\theta}}_{IV,i}=\left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{g}}_{i,T},
-\end{align}
-where
-\begin{align}
-\tilde{\boldsymbol{g}}_{i,T}=\frac{1}{T}\tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{y}}_{i},
-\end{align}
- and $\tilde{\boldsymbol{W}}_{i}=\left( \tilde{w}^{'}_{i,1},\ldots, \tilde{w}^{'}_{i,T} \right)^{'}$ is $T \times 2$ matrix
-
-From above equation, we have
-\begin{align}
-\sqrt{T}\left(\boldsymbol{\hat{\theta}}_{IV,i}-\boldsymbol{\theta}_{i} \right)=\left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\left(T^{-1/2}  \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \right)
-\end{align}
-Then, the property of $T^{-1/2}  \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i} $ is given by following proposition.\\
-\begin{myProp}
-Under above assumptions, as $\left(N, T \right)\overset{j}{\to} \infty$ such that $N/T \to c$ with $0 < c<\infty $, for each $i$, we have
-\begin{align}
-\begin{split}
-&N^{-1} \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}\overset{p}{\to} \boldsymbol{0},  \\
-&\,\,\,\,and\,\,\,\,\, \\
-&T^{-1/2}  \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{i} \right).
-\end{split}
-\end{align}
-\end{myProp}
-
-Thus, IV  estimator, $\boldsymbol{\theta}_{IV, i}$ is $\sqrt{T}$ consistent to $\boldsymbol{\theta}_{i}$ and this estimator does not have Nickell's bias. Then, we have following theorem\\
-$\mathbf{Theorem \,\,1}$ \\
-As $\left(N,T \right)\to \infty $ such that $N/T \to c$ with $0< c< \infty$. for each $i$,
-\begin{align}
-\sqrt{T}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}  \right)\overset{d}{\to} N \left(\boldsymbol{0},\,\left(\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}\boldsymbol{A}_{i} \right)^{-1}\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}   \boldsymbol{\Sigma}_{i}\boldsymbol{B}_{i}^{-1} \boldsymbol{A}_{i}\left(\boldsymbol{A}_{i}^{'}\boldsymbol{B}_{i}^{-1}\boldsymbol{A}_{i} \right)\right).
-\end{align}
-
-
-\subsubsection{Mean group IV estimator }
-Now, we define the mean group estimator of $\boldsymbol{\theta}$:
-\begin{align}
-\hat{\boldsymbol{\theta}}_{IVMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{IVi}.
-\end{align}
-And we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}_{IVMG}$, as
-\begin{align}
-\hat{\boldsymbol{\theta}}_{IVMG}-\boldsymbol{\theta}=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}- \boldsymbol{\theta}\right)=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}- \boldsymbol{\theta}_{i}\right)+\frac{1}{N}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i},
-\end{align}
-where
-\begin{align}
-\begin{split}
-\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}- \boldsymbol{\theta}_{i}\right)&=\frac{1}{N}\sum^{N}_{i=1} \left(\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\tilde{\boldsymbol{A}}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{'}\tilde{\boldsymbol{B}}_{i,T}^{-1}\left(T^{-1}  \tilde{\boldsymbol{Z}}^{'}_{i}\tilde{\boldsymbol{u}}_{i} \right) \\
-&= O_{p}\left(\delta^{-2}_{NT} \right),
-\end{split}
-\end{align}
-where $\delta_{NT}=\min \{\sqrt{N},\,\sqrt{T} \}$.
-We note that $\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i}=O_{p}\left(N^{-1/2} \right)$, if $\delta_{NT}^{-(2+\varsigma)}\to 0$ for any $\varsigma >0$, we have
-\begin{align}
-\sqrt{N}\left(\hat{\boldsymbol{\theta}}_{IVMG}-\boldsymbol{\theta}  \right)=\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i}+o_{p} \left(1 \right).
-\end{align}
-
-And the variance estimator of $\hat{\boldsymbol{\theta}}_{IVMG}$ is given by
-\begin{align}
-\hat{\boldsymbol{\Sigma}}_{IV,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{IV,i}- \hat{\boldsymbol{\theta}}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}_{IV,i}- \hat{\boldsymbol{\theta}}_{IVMG}\right)^{'}. \label{44}
-\end{align}
-Follow \citet{Norkute:2019}, we can show that $\hat{\boldsymbol{\Sigma}}_{IV,\lambda}$ is consistent and it does not have small $T$ bias.
-Firstly, we decompose $(\ref{44})$ as
-\begin{align}
-\begin{split}
-&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{IV,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}_{IV,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}_{IVMG}\right)^{'}= \\
-& \sum^{N}_{i=1} \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i} \right)^{'}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}  \right) -\\
-&N\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{IVMG} \right). \label{45}
-\end{split}
-\end{align}
-Then we can show consistent of $\hat{\boldsymbol{\Sigma}}_{IV,\lambda}$ as
-\begin{align}
-\begin{split}
-&\hat{\boldsymbol{\Sigma}}_{IV,\lambda}-\boldsymbol{\Sigma}_{IV,\lambda}=
- \frac{1}{N-1}\sum^{N}_{i=1}\left( \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}-\boldsymbol{\Sigma}_{IV,\lambda}\right) +\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i} \right)^{'} \\
-&+\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\frac{1}{N-1}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}  \right) -\\
-&\frac{N}{N-1}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{IVMG} \right)  =o_{p}(1).
-\end{split}
-\end{align}
+Our goal is estimating $\boldsymbol{H}$ to minimize the approximate mean square error. 
 
 
 
 
 
 
-Then, we can see that the asymptotic property of $\hat{\boldsymbol{\theta}}_{IVMG} $ as,
-\begin{align}
-\sqrt{N}\left(\hat{\boldsymbol{\theta}}_{IVMG}-\boldsymbol{\theta}  \right)\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{IV,\lambda} \right).
-\end{align}
 
 
 
@@ -720,10 +531,226 @@ Related literature to choosing number of instruments: \citet{Stephen:2001}, \cit
 
 
 \newpage
+\appendix
+\appendixpage
+\section{Asymptotic property of LS estimator}
+
+
+Based on heterogenous dynamic panel data model $(\ref{1})$, we can obtain fixed effect estimator as
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LS,i}=
+\begin{pmatrix}
+\hat{\phi}_{i} \\
+\hat{\beta}_{i}
+\end{pmatrix}=
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
+\end{pmatrix}^{-1}
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{y}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t}}{T}
+\end{pmatrix},
+\end{align}
+
+where $\tilde{y}_{i,t}=y_{i,t}-\bar{y}_{i}$, $\tilde{y}_{i,t-1}=y_{i,t-1}-\bar{y}_{i,-1}\iota_{T}$ and $\tilde{x}_{i,t}=x_{i,t}-\bar{x}_{i}$ with $\bar{y}_{i}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t}$, $\bar{y}_{i,-1}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t-1}$,  $\bar{x}_{i}=\frac{1}{T}\sum^{T}_{t=1}x_{i,t}$.  Under equation $(\ref{1})$, we have
+\begin{align}
+\begin{pmatrix}
+\hat{\phi}_{i}-\phi_{i} \\
+\hat{\beta}_{i}-\beta_{i}
+\end{pmatrix}=
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
+\end{pmatrix}^{-1}
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{u}_{i,t}}{T}
+\end{pmatrix},
+\end{align}
+where $\tilde{u}_{i,t}$ is $u_{i,t}-\bar{u}_{i}$ with $\bar{u}_{i}=\frac{1}{T}\sum^{T}_{t=1}u_{i,t}.$
+
+
+Now, we can investigate asymptotic bias by taking the probability limit as
+\begin{align}
+A^{(1)}_{\phi i}=\plim_{T  \rightarrow \infty}\left( \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \right). \label{11}
+\end{align}
+Then $A^{(1)}_{i}$ can be taken expectations as
+\begin{align}
+\begin{split}
+A^{(1)}_{\phi i}&=E\left(y_{i,t-1}-\bar{y}_{i,-1} \right) \left(u_{i,t}-\bar{u}_{i} \right) \\
+&= E\left( y_{i,t-1}u_{i,t}\right) - E\left( y_{i,t-1} \bar{u}_{i}  \right)-E\left(\bar{y}_{i,-1}   u_{i,t}\right)+E\left(\bar{y}_{i,-1}  \bar{u}_{i}\right),
+\end{split}
+\end{align}
+where $E\left( y_{i,t-1}u_{i,t}\right)=0$.
+
+And we assume $y_{i,t}$ has started from a long time period in the past, so we have
+\begin{align}
+y_{i,t}=\frac{\alpha_{i}}{\left(1-\phi_{i} \right)}+\sum^{\infty}_{s=0}\beta_{i}\phi^{s}_{i}x_{i,t -s}+\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s},
+\end{align}
+
+Then, we have
+\begin{align}
+\begin{split}
+A^{(1)}_{\phi i}&=-E\left( \left(\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right) \left(\frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right)  \right)-E\left(\frac{u_{i,t}}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)+ \\
+&\left(\frac{1}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)\left( \frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right). \label{12}
+\end{split}
+\end{align}
+ Hence, from above equation, we have
+ \begin{equation}
+\begin{split}
+A^{(1)}_{\phi i}=&-\dfrac{1}{T} E\left\{  \left( u_{i,t-1}+u_{i,t-2}\phi_{i}^{1}+u_{i,t-3}\phi_{i}^{2}+\ldots\right)\left(u_{i,1}+\ldots+u_{i,t-1}+u_{i,t}+\ldots+u_{i,T}\right) \right\} -\\
+ &\dfrac{1}{T} E \left\{  u_{i,t}\sum^{T}_{s=1}\left( u_{i,s-1}\phi_{i}^{0}+u_{i,s-2}\phi_{i}^{1}+\ldots+u_{i,s-t-1}\phi_{i}^{t}+\ldots+u_{i,s-T-1}\phi_{i}^{T}+\ldots \right)  \right\}  + \\
+ +& \dfrac{1}{T} E\{ \left( \sum^{T}_{s=1}u_{i,s-1}\phi_{i}^{0}+\sum^{T}_{s=1}u_{i,s-2}\phi_{i}^{1}+\ldots+\sum^{T}_{s=1}u_{i,s-t-1}\phi_{i}^{t}+\ldots
++\sum^{T}_{s=1}u_{is-T-1}\phi_{i}^{T}+\ldots \right)\\
+ &\left(\dfrac{1}{T}\sum^{T}_{s=1}u_{i,s}\right) \} \\
+ =&-\dfrac{\sigma_{u}^{2}}{T}\dfrac{(1-\phi_{i}^{t-1})}{1-\phi_{i}}-\dfrac{\sigma^{2}_{u}}{T}\dfrac{(1-\phi_{i}^{T-t})}{(1-\phi_{i})}+\dfrac{\sigma^{2}_{u}}{T} \left( \dfrac{1}{1-\phi_{i}}-\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})^{2}}\right) \\
+ =&-\dfrac{\sigma_{u}^{2}}{T(1-\phi_{i})}\left( 1-\phi_{i}^{t-1}-\phi_{i}^{T-t}+\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})}  \right).
+ \end{split}
+\end{equation}
+
+
+Therefore, we can see the bias of $\hat{\phi}_{i}$ is $O\left(T^{-1}\right)$.
+
+To be more compact ,we can rewrite the model as,
+\begin{align}
+\tilde{\boldsymbol{y}}_{i}=\tilde{\boldsymbol{W}}_{i}\boldsymbol{\theta}_{i}+\tilde{\boldsymbol{u}}_{i},
+\end{align}
+where $\tilde{\boldsymbol{y}}_{i}=\left(\tilde{\boldsymbol{y}}_{i,1},\ldots, \tilde{\boldsymbol{y}}_{i,T}  \right)^{'}$ is $T \times 1$ vector,  $\tilde{\boldsymbol{W}}_{i}=\left( \tilde{\boldsymbol{w}}_{i,1},\ldots, \tilde{\boldsymbol{w}}_{i,T} \right)^{'}$ is $T \times 2$ matrix and $\tilde{\boldsymbol{u}}_{i}=\left(\tilde{\boldsymbol{u}}_{i,1}, \ldots, \tilde{\boldsymbol{u}}_{i,T} \right)$ is $T \times 1$ vector with $\tilde{\boldsymbol{w}}_{i,t}=\left(y_{i,t-1}-\bar{y}_{i,-1}, x_{i,t}-\bar{x}_{i}  \right)^{'}$, for $t=1,\ldots, T$ and $i=1,\ldots, N.$
+
+Also, we define our interested parameter as
+\begin{align}
+\left(\phi_{i},\beta_{i}  \right)^{'}=\boldsymbol{\theta}_{i}=\boldsymbol{\theta}+\boldsymbol{\lambda}_{i},
+\end{align}
+where $\boldsymbol{\lambda}_{i}\overset{i.i.d.}{\sim} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\lambda} \right).$
+The lest square estimator, $\hat{\boldsymbol{\theta}}_{LS,i}$, can be expressed as
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LS,i}=\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T}. \label{13}
+\end{align}
+
+From above discussion and assumptions, we have following theorem \\
+\begin{myTheo}
+\begin{align}
+\sqrt{T}\left(\hat{\boldsymbol{\theta}}_{IV,i}-\boldsymbol{\theta}_{i}\right) \overset{d}{\to} N \left(\boldsymbol{0}, \boldsymbol{Q}_{i}^{-1}\boldsymbol{\Sigma}_{LS,i}\boldsymbol{Q}_{i}^{-1}  \right),
+\end{align}
+where $\boldsymbol{\Sigma}_{LS,i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{u}}_{i} \tilde{\boldsymbol{u}}^{'}_{i}  \tilde{\boldsymbol{W}}_{i} $ and $\boldsymbol{Q}_{i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{W}}_{i}$
+\end{myTheo}
+
+
+
+\subsubsection{Mean group LS estimator }
+Now, we define the mean group estimator of $\boldsymbol{\theta}$:
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LSMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSi}.
+\end{align}
+And we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}_{LSMG}$, as
+\begin{align}
+\begin{split}
+\hat{\boldsymbol{\theta}}_{LSMG}&=N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T} \\
+&=\bar{\boldsymbol{\theta}}+N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T},
+\end{split}
+\end{align}
+where $\bar{\boldsymbol{\theta}}=N^{-1}\sum^{N}_{i=1}\boldsymbol{\theta}_{i}.$
+For fixed $N$ and large $T$, we have
+\begin{align}
+\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}+ N^{-1}\sum^{N}_{i=1}\plim_{T \to \infty}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1}\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)
+\end{align}
+ Then, from section $1.1$, we know that $\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)=O_{p}(1)$. Thus,  we can obtain
+\begin{align}
+\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}.
+\end{align}
+When $N \to \infty$ and $T \to \infty$ and by the law of large numbers, we can see that
+\begin{align}
+\plim_{T \to \infty, N \to \infty}\hat{\boldsymbol{\theta}}_{LSMG}=\boldsymbol{\theta}.
+\end{align}
+
+And the variance estimator of $\hat{\boldsymbol{\theta}}_{LSMG}$ is given by
+\begin{align}
+\hat{\boldsymbol{\Sigma}}_{LS,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}.
+\end{align}
+
+We show that $\hat{\boldsymbol{\Sigma}}_{LS,\lambda}$ is consistent when $N \to \infty$ and $T \to \infty.$
+\begin{align}
+\begin{split}
+&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}=\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right) \right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}\\
+&+\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}\\
+&-\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'} \\
+&-\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right) \left( \hat{\boldsymbol{\theta}}_{LSMG}- E\left(\hat{\boldsymbol{\theta}}_{LS, i}\right)\right)^{'}. \label{20}
+\end{split}
+\end{align}
+
+Taking expectation on equation $(\ref{20})$, we have
+\begin{align}
+\begin{split}
+&E\left( \sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'} \right)=
+ \sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+
+\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG}+  \\
+&\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}-
+\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LS,i}+
+\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)\hat{\boldsymbol{\theta}}^{'}_{LS,i}-
+\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSMG}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}- \\
+&\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LSMG}+
+\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LS,i}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}-
+\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'} = \\
+&\sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)-N E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)+\sum^{N}_{i=1}E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right) E\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)^{'}
+\end{split}
+\end{align}
+and
+\begin{align}
+E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)=\frac{1}{N^{2}} \sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right).
+\end{align}
+
+And, we also have
+\begin{align}
+E \left(\hat{\boldsymbol{\theta}}_{LSMG}\hat{\boldsymbol{\theta}}^{'}_{LSMG} \right)=\frac{1}{N^{2}}\left( \sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+ \sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right) \right).
+\end{align}
+Then,
+\begin{align}
+\begin{split}
+&E\left( \sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'} \right)= \\
+&\left(1-\frac{1}{N} \right)\sum^{N}_{i=1}Var\left(\hat{\boldsymbol{\theta}}_{LS,i}\right)+ \sum^{N}_{i=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right). \label{24}
+\end{split}
+\end{align}
+From above equation $(\ref{24})$, we can observe the bias term as,
+\begin{align}
+\aleph=\sum^{N}_{i=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(\hat{\boldsymbol{\theta}}_{LS,i}\hat{\boldsymbol{\theta}}^{'}_{LS,i} \right). \label{25}
+\end{align}
+
+ Taking expectation on equation $(26)$, we have
+\begin{align}
+E\left( \hat{\boldsymbol{\theta}}_{LS,i} \right)=\boldsymbol{\theta}+E \left(b_{i} \right),
+\end{align}
+From equation $(\ref{25})$, we know that
+ \begin{align}
+\aleph=\sum^{N}_{i=1}E \left(b_{i}\right) E\left(b^{'}_{i} \right)- \frac{1}{N}\sum^{N}_{i=1}\sum^{N}_{j=1}E \left(b_{i}\right) E\left(b^{'}_{j} \right).
+ \end{align}
+When $T \to \infty$, $\aleph=0$.
+Therefore, we have following theorem \\
+
+\begin{myTheo}
+When $(T,N) \overset{j}{\to} \infty$ such that $N/T \to c$ with $0<c< \infty$,
+\begin{enumerate}
+\item \begin{align}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}_{LSMG}-\boldsymbol{\theta}  \right)\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{LS,\lambda} \right).
+\end{align}
+\item \begin{align}
+\hat{\boldsymbol{\Sigma}}_{LS,\lambda} \overset{p}{\to}  \boldsymbol{\Sigma}_{LS,\lambda}
+\end{align}
+where
+\begin{align}
+ \hat{\boldsymbol{\Sigma}}_{LS,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}.
+\end{align}
+\end{enumerate}
+\end{myTheo}
+
+
 
 \addcontentsline{toc}{section}{Reference}
 \renewcommand\refname{References}
 \bibliographystyle{chicago}
 \bibliography{1}
+
+
+
 
 \end{document}  \href{*}{*} 
