@@ -119,6 +119,17 @@ size_power_IVMG2_beta= zeros(size(list_power,2),rep);
 size_power_optIVMG_phi= zeros(size(list_power,2),rep);
 size_power_optIVMG_beta= zeros(size(list_power,2),rep);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+se_IV1=zeros(1+k,1+k,rep);
+se_IV2=zeros(1+k,1+k,rep);
+se_opt_IV=zeros(1+k,1+k,rep);
+size_power_IV1_phi= zeros(size(list_power,2),rep);
+size_power_IV1_beta= zeros(size(list_power,2),rep);
+size_power_IV2_phi= zeros(size(list_power,2),rep);
+size_power_IV2_beta= zeros(size(list_power,2),rep);
+size_power_optIV_phi= zeros(size(list_power,2),rep);
+size_power_optIV_beta= zeros(size(list_power,2),rep);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 randn('state', 12345678) ;
 rand('state', 1234567) ;
@@ -324,6 +335,10 @@ bias_IV2(:,sml)= nanmean(ini_theta_IV-theta_i,2);
 bias_IV3(:,sml)=nanmean(ini_theta_IV_1-theta_i,2);
 bias_opt_IV(:,sml)=nanmean(opt_theta_IV_i-theta_i,2);
 
+se_IV1(:,:,sml)=ini_theta_IV*ini_theta_IV'/(N-1);
+se_IV2(:,:,sml)= ini_theta_IV_1*ini_theta_IV_1'/(N-1);
+se_opt_IV(:,:,sml)=  opt_theta_IV_i*opt_theta_IV_i'/(N-1);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ini_IVMG(:,sml)=nanmean(ini_theta_IV,2);  % mean group estimator
@@ -359,14 +374,35 @@ if abs(opt_IVMG(2,sml)- (b-d))/se_opt_IVMG(2,2,sml)> 1.96;
         
 end    
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for idx_power=1:size(list_power,2)  % do test for power and size of test, power=P(reject H_0 | H_1 is true ), size=P(reject H_0 | H_0 is true) 
+d = list_power(idx_power);
+
+if abs(ini_IVMG(1,sml) - (phi-d))/se_IVMG1(1,1,sml)> 1.96; 
+        size_power_IVMG1_phi(idx_power, sml)=1;  end
+
+if abs(ini_IVMG(2,sml)-(b-d))/se_IVMG1(2,2,sml)> 1.96; 
+        size_power_IVMG1_beta(idx_power, sml)=1;  end
+    
+if abs(ini_IVMG2(1,sml) - (phi-d))/se_IVMG2(1,1,sml)> 1.96; 
+        size_power_IVMG2_phi(idx_power, sml)=1;  end
+
+if abs(ini_IVMG2(2,sml)- (b-d))/se_IVMG2(2,2,sml)> 1.96; 
+        size_power_IVMG2_beta(idx_power, sml)=1;  end
+    
+if abs(opt_IVMG(1,sml) - (phi-d))/se_opt_IVMG(1,1,sml)> 1.96; 
+       size_power_optIVMG_phi(idx_power, sml)=1;  end
+
+if abs(opt_IVMG(2,sml)- (b-d))/se_opt_IVMG(2,2,sml)> 1.96; 
+       size_power_optIVMG_beta(idx_power, sml)=1;  end    
+        
+end    
 
 
 
 
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
