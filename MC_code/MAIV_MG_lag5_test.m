@@ -1,7 +1,7 @@
-rep = 500;  
+rep = 50;  
 list_T = [25 50 100 200]; 
 list_N = [25 50 100 200];  
-list_phi= [0.2 0.5 0.8]; 
+list_phi= [0.5 ]; 
 b1=3;
 rho_b=0.4;
 rho_b1=0.5;
@@ -63,8 +63,6 @@ ini_mae_phi_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 ini_mae_beta1_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
 opt_bias_mean_phi_2=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_bias_mean_beta1_2=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); 
 
@@ -84,10 +82,8 @@ opt_bias_mean_beta1_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_std_phi_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));  
 opt_std_beta1_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 
-
 opt_rmse_phi_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_rmse_beta1_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
-
 
 opt_mae_phi_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_mae_beta1_3=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
@@ -97,7 +93,6 @@ opt_bias_mean_beta1_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 
 opt_std_phi_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));  
 opt_std_beta1_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
-
 
 opt_rmse_phi_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_rmse_beta1_4=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
@@ -214,28 +209,28 @@ W_it(:,:,2)=(F*x_NT1')'; %  x_(i,T); N by T1
 %W_it(:,:,2)=x_NT1;  %  x_(i,T); N by T1  
 
 Z_it_1=zeros(N,T1,2*k);           % N by T1 by 2k
-Z_it_1(:,:,1)=x_NT1(:,1:T1);   % N by T1 
-Z_it_1(:,:,2)=x_NT1_1(:,1:T1);   % N by T1 
+Z_it_1(:,:,1)=(F*x_NT1')';   % N by T1 
+Z_it_1(:,:,2)=(F*x_NT1_1')';  % N by T1 
 
 
 Z_it_2=zeros(N,T1,3*k);           % N by T1 by 3k
-Z_it_2(:,:,1)=x_NT1(:,1:T1);   % N by T1 
-Z_it_2(:,:,2)=x_NT1_1(:,1:T1);   % N by T1  ; lag 1
-Z_it_2(:,:,3)=x_NT1_2(:,1:T1);   % N by T1    ; lag 2
+Z_it_2(:,:,1)=(F*x_NT1')';  % N by T1 
+Z_it_2(:,:,2)=(F*x_NT1_1')';  % N by T1  ; lag 1
+Z_it_2(:,:,3)=(F*x_NT1_2')';   % N by T1    ; lag 2
 
 Z_it_3=zeros(N,T1,4*k);           % N by T1  by 4k
-Z_it_3(:,:,1)=x_NT1(:,1:T1);   % N by T1 
-Z_it_3(:,:,2)=x_NT1_1(:,1:T1);   % N by T1   ; lag 1
-Z_it_3(:,:,3)=x_NT1_2(:,1:T1);   % N by T1     ; lag 2
-Z_it_3(:,:,4)=x_NT1_3(:,1:T1);   % N by T1     ; lag 3
+Z_it_3(:,:,1)=(F*x_NT1')';  % N by T1 
+Z_it_3(:,:,2)=(F*x_NT1_1')';   % N by T1   ; lag 1
+Z_it_3(:,:,3)=(F*x_NT1_2')';   % N by T1     ; lag 2
+Z_it_3(:,:,4)=(F*x_NT1_3')';  % N by T1     ; lag 3
 
 
 Z_it_4=zeros(N,T1,5*k);           % N by T1  by 5k
-Z_it_4(:,:,1)=x_NT1(:,1:T1);   % N by T1  
-Z_it_4(:,:,2)=x_NT1_1(:,1:T1);   % N by T1  ; lag 1
-Z_it_4(:,:,3)=x_NT1_2(:,1:T1);   % N by T1     ; lag 2
-Z_it_4(:,:,4)=x_NT1_3(:,1:T1);   % N by T1    ; lag 3
-Z_it_4(:,:,5)=x_NT1_4(:,1:T1);   % N by T1     ; lag 4
+Z_it_4(:,:,1)=(F*x_NT1')';  % N by T1  
+Z_it_4(:,:,2)=(F*x_NT1_1')';  % N by T1  ; lag 1
+Z_it_4(:,:,3)=(F*x_NT1_2')';    % N by T1     ; lag 2
+Z_it_4(:,:,4)=(F*x_NT1_3')';  % N by T1    ; lag 3
+Z_it_4(:,:,5)=(F*x_NT1_4')';  % N by T1     ; lag 4
 
 
 
