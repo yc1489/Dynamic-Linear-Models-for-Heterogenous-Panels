@@ -1,7 +1,7 @@
 rep = 500;  
-list_T = [25 50 100 200]; 
-list_N = [25 50 100 200];  
-list_phi= [0.2 0.5 0.8]; 
+list_T = [ 25 ]; 
+list_N = [25];  
+list_phi= [ 0.5 ]; 
 b1=3;
 rho_b=0.4;
 rho_b1=0;
@@ -128,6 +128,7 @@ opt_mae_beta1_5=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 
 
 
+
 for idx_phi=1:size(list_phi,2)     
 phi= list_phi(idx_phi);  
   b1=3;
@@ -151,6 +152,17 @@ opt_IVMG_2=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_3=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_4=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_5=zeros(1+k,rep);   % 1+k by rep
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+omega_IV_i_2=zeros(2,N,rep);
+omega_IV_i_3=zeros(3,N,rep);
+omega_IV_i=zeros(4,N,rep);
+omega_IV_i_5=zeros(5,N,rep);
+
+ fval2=zeros(N,rep);
+ fval3=zeros(N,rep);
+  fval4=zeros(N,rep);
+   fval5=zeros(N,rep);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 randn('state', 12345678) ;
 rand('state', 1234567) ;
@@ -424,7 +436,6 @@ j2=2;
  j3=3;
  j4=4;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-omega_IV_i_2=zeros(2,N);
 for ome_i_2=1:N
     omega_ini_2 = rand(2,1);
     lq_2 = [zeros(2,1)];
@@ -435,12 +446,12 @@ for ome_i_2=1:N
     Sigma_eta_i_i=Sigma_eta_i(:,ome_i_2);
     hat_U_i_2=hat_U2(:,:,ome_i_2);    
     [omega_2, fval_2, exitflag_2, output_2, lambda_2, hessian_2] = MAIV_opt_2(T1,K_2,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_2,Gamma_2,j2,omega_ini_2,lq_2,uq_2);
- omega_IV_i_2(:,ome_i_2)=omega_2;
- 
+ omega_IV_i_2(:,ome_i_2,sml)=omega_2;
+ fval2(ome_i_2,sml)=fval_2;
 end
 
 
-omega_IV_i_3=zeros(3,N);
+
 for ome_i_3=1:N
     omega_ini_3 = rand(3,1);
     lq_3 = [zeros(3,1)];
@@ -451,14 +462,14 @@ for ome_i_3=1:N
     Sigma_eta_i_i=Sigma_eta_i(:,ome_i_3);
     hat_U_i_3=hat_U3(:,:,ome_i_3);    
     [omega_3, fval_3, exitflag_3, output_3, lambda_3, hessian_3] = MAIV_opt_3(T1,K_3,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_3,Gamma_3,j3,omega_ini_3,lq_3,uq_3);
- omega_IV_i_3(:,ome_i_3)=omega_3;
- 
+ omega_IV_i_3(:,ome_i_3,sml)=omega_3;
+ fval3(ome_i_3,sml)=fval_3;
 end
 
 
 
 
-omega_IV_i=zeros(j4,N);
+
 for ome_i=1:N
     omega_ini = rand(j4,1);
     lq = [zeros(j4,1)];
@@ -468,11 +479,11 @@ for ome_i=1:N
     Sigma_eta_i_i=Sigma_eta_i(:,ome_i);
     hat_U_i_4=hat_U(:,:,ome_i);    
     [omega, fval, exitflag, output, lambda, hessian] = MAIV_opt(T1,K,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_4,Gamma,j4,omega_ini,lq,uq);
- omega_IV_i(:,ome_i)=omega;
- 
+ omega_IV_i(:,ome_i,sml)=omega;
+ fval4(ome_i,sml)=fval;
 end
 
-omega_IV_i_5=zeros(j,N);
+
 for ome_i_5=1:N
     omega_ini_5 = rand(j,1);
     lq_5 = [zeros(j,1)];
@@ -482,8 +493,8 @@ for ome_i_5=1:N
     Sigma_eta_i_i=Sigma_eta_i(:,ome_i_5);
     hat_U_i_5=hat_U5(:,:,ome_i_5);    
     [omega_5, fval_5, exitflag_5, output_5, lambda_5, hessian_5] = MAIV_opt_5(T1,K_5,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_5,Gamma_5,j,omega_ini_5,lq_5,uq_5);
- omega_IV_i_5(:,ome_i_5)=omega_5;
- 
+ omega_IV_i_5(:,ome_i_5,sml)=omega_5;
+ fval5(ome_i_5,sml)=fval_5;
 end
 
 
@@ -492,22 +503,22 @@ end
 
 P_2=zeros(T1,T1,N);
 for pi_2=1:N
-P_2(:,:,pi_2)= omega_IV_i_2(1,pi_2)*P_i_1(:,:,pi_2)+omega_IV_i_2(2,pi_2)*P_i_2(:,:,pi_2);
+P_2(:,:,pi_2)= omega_IV_i_2(1,pi_2,sml)*P_i_1(:,:,pi_2)+omega_IV_i_2(2,pi_2,sml)*P_i_2(:,:,pi_2);
 end
 
 P_3=zeros(T1,T1,N);
 for pi_3=1:N
-P_3(:,:,pi_3)= omega_IV_i_3(1,pi_3)*P_i_1(:,:,pi_3)+omega_IV_i_3(2,pi_3)*P_i_2(:,:,pi_3)+omega_IV_i_3(3,pi_3)*P_i_3(:,:,pi_3);
+P_3(:,:,pi_3)= omega_IV_i_3(1,pi_3,sml)*P_i_1(:,:,pi_3)+omega_IV_i_3(2,pi_3,sml)*P_i_2(:,:,pi_3)+omega_IV_i_3(3,pi_3,sml)*P_i_3(:,:,pi_3);
 end
 
 P_4=zeros(T1,T1,N);
 for pi=1:N
-P_4(:,:,pi)= omega_IV_i(1,pi)*P_i_1(:,:,pi)+omega_IV_i(2,pi)*P_i_2(:,:,pi)+omega_IV_i(3,pi)*P_i_3(:,:,pi)+omega_IV_i(4,pi)*P_i_4(:,:,pi) ;
+P_4(:,:,pi)= omega_IV_i(1,pi,sml)*P_i_1(:,:,pi)+omega_IV_i(2,pi,sml)*P_i_2(:,:,pi)+omega_IV_i(3,pi,sml)*P_i_3(:,:,pi)+omega_IV_i(4,pi,sml)*P_i_4(:,:,pi) ;
 end
 
 P_5=zeros(T1,T1,N);
 for pi_5=1:N
-P_5(:,:,pi_5)= omega_IV_i_5(1,pi_5)*P_i_5(:,:,pi_5)+omega_IV_i_5(2,pi_5)*P_i_5(:,:,pi_5)+omega_IV_i_5(3,pi)*P_i_5(:,:,pi)+omega_IV_i_5(4,pi_5)*P_i_5(:,:,pi_5) ;
+P_5(:,:,pi_5)= omega_IV_i_5(1,pi_5,sml)*P_i_5(:,:,pi_5)+omega_IV_i_5(2,pi_5,sml)*P_i_5(:,:,pi_5)+omega_IV_i_5(3,pi,sml)*P_i_5(:,:,pi)+omega_IV_i_5(4,pi_5,sml)*P_i_5(:,:,pi_5) ;
 end
 
 
@@ -548,6 +559,33 @@ opt_IVMG_5(:,sml)=nanmean(opt_theta_IV_i_5,2); % LS_MG
 
 sml=sml+1;
 end
+
+ome_2=zeros(2,N);
+ome_3=zeros(3,N);
+ome_4=zeros(4,N);
+ome_5=zeros(5,N);
+fva2=zeros(N,1);
+fva3=zeros(N,1);
+fva4=zeros(N,1);
+fva5=zeros(N,1);
+for rep1=1:rep
+ome_2=ome_2+omega_IV_i_2(:,:,rep1);
+ome_3=ome_3+omega_IV_i_3(:,:,rep1);
+ome_4=ome_4+omega_IV_i(:,:,rep1);
+ome_5=ome_5+omega_IV_i_5(:,:,rep1);
+fva2= fva2 +fval2(:,rep1);
+fva3=fva3 +fval3(:,rep1);
+fva4=fva4 +fval4(:,rep1);
+fva5=fva5 +fval5(:,rep1);
+end
+ome2=nanmean(ome_2,2)/rep;
+ome3=nanmean(ome_3,2)/rep;
+ome4=nanmean(ome_4,2)/rep;
+ome5=nanmean(ome_5,2)/rep;
+fv2=nanmean(fva2,1)/rep;
+fv3=nanmean(fva3,1)/rep;
+fv4=nanmean(fva4,1)/rep;
+fv5=nanmean(fva5,1)/rep;
 
 
 ini_mean_phi_1= nanmean(ini_IVMG_1(1,:));
@@ -702,4 +740,3 @@ opt_mae_beta1_5(idx_T, idx_N, idx_phi) = median((opt_IVMG_5(2,:)-b1).^2);
 end
 end
 end
-
