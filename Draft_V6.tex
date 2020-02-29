@@ -1,0 +1,782 @@
+\documentclass[12pt,a4paper,hyperref]{article}
+\usepackage[usenames,dvipsnames]{xcolor}
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+	\definecolor{ultramarine}{rgb}{0.07, 0.04, 0.56}
+\usepackage{amsmath, natbib, latexsym, array, amssymb,longtable,float, graphicx, appendix,lscape,diagbox,textcomp,placeins}
+\usepackage[colorlinks,
+            linkcolor=ultramarine,
+            anchorcolor=green,
+            citecolor=darkblue
+            ]{hyperref}
+\usepackage[flushleft]{threeparttable}
+\usepackage[top=2.7cm, left=3cm, right=3cm, bottom=2.7cm]{geometry}
+\usepackage{hyperref}
+\newtheorem{myDef}{Definition}
+\newtheorem{myTheo}{Theorem}
+\newtheorem{myProp}{proposition}
+\newtheorem{myRem}{Remark}
+\newtheorem{myAssu}{Assumption}
+\newtheorem{myCor}{Corollary}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+\urlstyle{same}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{pgfplotstable}
+\sisetup{
+  round-mode          = places, % Rounds numbers
+  round-precision     = 2, % to 2 places
+}
+
+\newenvironment{sequation}{\begin{equation}\tiny}{\end{equation}}
+\DeclareMathOperator*{\plim}{plim}
+\renewcommand{\floatpagefraction}{0.60}
+\renewcommand{\appendixpagename}{\Large Appendix}
+\setcounter{secnumdepth}{3}
+\begin{document}
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+
+
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Dynamic Heterogeneous Panels with multi-factor error sructure}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+How many instrument variables should we use in estimation $?$ How to balance the trade-off between bias and efficiency $?$   
+Is our model slope heterogeneity or slope homogeneous $?$ In practical, we often have these open questions and we need to give the reasonable explanation from theory or data.
+Therefore, it might cost time to control all of these to get the reasonable explain in applied research. In this study, we would want to develop the statistical  methods to reduce the model uncertainty.
+Our contribution in this study are reducing the uncertainty of number of instrument variables and reducing the model selection problems. Also, this method is useful to largest set of instrument variables in high dimensional.
+ 
+
+
+
+
+
+\section{Model, asymptotic property of IV estimator}
+\subsection{The models and Assumptions}
+\subsubsection{Fixed effects model, b=1}
+Consider the dynamic heterogeneous panels data model with fixed effects:
+\begin{align}
+\begin{split}
+y^{b}_{i,t}&=\phi_{i} y^{b}_{i,t-1}+ \boldsymbol{x}^{'}_{i,t}\boldsymbol{\beta}_{i}+\alpha_{i}+u^{b}_{i,t}  \\
+&= \boldsymbol{w}^{b'}_{i,t}\boldsymbol{\theta}_{i}+ \alpha_{i}+u^{b}_{i,t}, \,\,\,\, \,\, \,\, \,\,\,\, \,\,\,\, \,\,\,\, \,\, for\,\,i=1,\ldots N;\,t=1,\ldots,T\, , \label{1}
+\end{split}
+\end{align}
+where $\boldsymbol{x}_{i,t}$ and $\boldsymbol{\beta}_{i}$ are $k \times 1$ vectors, $\boldsymbol{\theta}_{i}=\left(\phi_{i}, \boldsymbol{\beta}^{'}_{i} \right)^{'}$ and $\boldsymbol{w}^{b}_{i,t}=\left(y^{b}_{i,t-1}, \boldsymbol{x}^{'}_{i,t} \right)^{'}$ are $\left(1+k\right) \times 1$ vectors, and $b=1$ corresponds to the fixed effects model.
+Stacking the $T$ observations for each $i$, we have
+\begin{align}
+\boldsymbol{y}^{b}_{i}=\boldsymbol{W}^{b}_{i}\boldsymbol{\theta}_{i}+ \alpha_{i}\boldsymbol{\iota}_{T}+ \boldsymbol{u}^{b}_{i}, \label{2}
+\end{align}
+where $\boldsymbol{y}_{i}=\left(y_{i,1},\ldots, y_{i,T} \right)^{'}$ is a $T \times 1$ vector, $\boldsymbol{W}^{b}_{i}=\left(\boldsymbol{w}^{b}_{i,1},\ldots, \boldsymbol{w}^{b}_{i,T} \right)^{'}$ is a $T \times (1+k)$ matrix, $\iota_{T}=\left(1,\ldots,1 \right)^{'}$ and $\boldsymbol{u}^{b}_{i}=\left(u^{b}_{i,1}, \ldots, u^{b}_{i,T} \right)^{'}$ are $T \times 1$ vectors.
+
+Due to the incidental parameters problem arise, we use forward filter to the model by \citet{Moon:2000}, \citet{Hayakawa:2009} and \citet{Hayakawa:2019}. We define the $\left(T-1 \right) \times T$ forward demeaning matrix as
+
+\begin{align}
+\boldsymbol{F}^{b}=diag(c^{b}_{1}, c^{b}_{2}, \ldots c^{b}_{T-1})
+\begin{bmatrix}
+1 & \frac{-1}{T-1} & \cdots & \cdots & \frac{-1}{T-1}\\
+\vdots & 1 & \frac{-1}{T-2} & \cdots & \frac{-1}{T-2}\\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \cdots & -1
+\end{bmatrix},
+\end{align}
+where $c^{b}_{t}=\sqrt{\left( T-t\right)\left( T-t+1\right) }$, and  $b=1$ corresponds to the forward demeaning matrix under the fixed effects model.
+Premultiplying the model $(\ref{2})$ by $\boldsymbol{F}^{b}$, the model can be expressed as
+\begin{align}
+\tilde{\boldsymbol{y}}^{b}_{i}= \tilde{\boldsymbol{W}}^{b}_{i}\boldsymbol{\theta}_{i}+\tilde{\boldsymbol{u}}^{b}_{i}, \label{4}
+\end{align}
+where $b=1$, $\tilde{\boldsymbol{y}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{y}^{b}_{i}= \left(\tilde{\boldsymbol{y}}^{b}_{i,1}, \ldots, \tilde{\boldsymbol{y}}^{b}_{i,T-1} \right)^{'}$,  $\tilde{\boldsymbol{W}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{W}^{b}_{i}= \left(\tilde{\boldsymbol{w}}^{b}_{i,1}, \ldots, \tilde{\boldsymbol{w}}^{b}_{i,T-1} \right)^{'}$ and $\tilde{\boldsymbol{u}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{u}^{b}_{i}= \left(\tilde{\boldsymbol{u}}^{b}_{i,1}, \ldots, \tilde{\boldsymbol{u}}^{b}_{i,T-1} \right)^{'}$ with $\tilde{\boldsymbol{y}}^{b}_{i,t}=c^{b}_{t}\left[y_{i,t}-\left(y_{i,t+1}+\cdots+y_{i,T} \right)/\left(T-t \right) \right]$, for $t=1, \ldots, T-1.$
+
+
+\subsubsection{Trend model, b=2}
+Consider the dynamic heterogeneous panels data model with fixed effects and heterogeneous time trends:
+\begin{align}
+\begin{split}
+y^{b}_{i,t}&= \phi_{i} y^{b}_{i,t-1}+ \boldsymbol{x}^{'}_{i,t}\boldsymbol{\beta}_{i}+\alpha_{i}+\eta_{i}t+u^{b}_{i,t} \\
+&= \boldsymbol{w}^{b'}_{i,t}\boldsymbol{\theta}_{i}+ \alpha_{i}+\eta_{i}t+u^{b}_{i,t}, \,\,\,\, \,\, \,\, \,\,\,\, \,\,\,\, \,\,\,\, \,\, for\,\,i=1,\ldots N;\,t=1,\ldots,T\, ,
+\end{split}
+\end{align}
+where $\boldsymbol{x}_{i,t}$ and $\boldsymbol{\beta}_{i}$ are $k \times 1$ vectors,  $\boldsymbol{\theta}_{i}=\left(\phi_{i}, \boldsymbol{\beta}^{'}_{i} \right)^{'}$ and $\boldsymbol{w}^{b}_{i,t}=\left(y^{b}_{i,t-1}, \boldsymbol{x}^{'}_{i,t} \right)^{'}$ are $\left(1+k\right) \times 1$ vectors, and $b=2$ corresponds to the trend model.
+Stacking the $T$ observations for each $i$, we have
+\begin{align}
+\boldsymbol{y}^{b}_{i}=\boldsymbol{W}^{b}_{i}\boldsymbol{\theta}_{i}+ \alpha_{i}\boldsymbol{\iota}_{T}+\eta_{i}\boldsymbol{\tau}_{T} + \boldsymbol{u}^{b}_{i}, \label{6}
+\end{align}
+where $\boldsymbol{\tau}_{T}=\left(1, 2, \ldots, T \right)^{'}$. Then, we define the forward demeaning matrix to the trend model as
+
+\begin{align}
+\boldsymbol{F}^{b}=diag(c^{b}_{1}, c^{\tau}_{2}, \ldots c^{b}_{T-2})
+\begin{bmatrix}
+1 & \frac{2(-2(T-2))}{(T-1)(T-2)} & \frac{2(-2(T-2)+3)}{(T-1)(T-2)} & \cdots & \frac{2(-2(T-2)+3(T-2))}{(T-1)(T-2)} \\
+0 & 1 & \frac{2(-2(T-3))}{(T-2)(T-3)} & \cdots & \frac{2(-2(T-3)+3(T-3))}{(T-3)(T-4)} \\
+\vdots &\vdots & \vdots & \ddots  &\vdots \\
+0 & \cdots & \cdots & \cdots & \frac{2(-2+3)}{2 \cdot 1}
+\end{bmatrix}, \label {7}
+\end{align}
+where $c^{b}_{t}=\left((T-t)(T-t-1)/(T-t-1)(T-t+2)\right)^{1/2}$, and $b=2$ corresponds to the forward demeaning matrix under the trend model.
+
+Multiply $\boldsymbol{F}^{b}$ to model $(\ref{6})$, the model can expressed as
+\begin{align}
+\tilde{\boldsymbol{y}}^{b}_{i}= \tilde{\boldsymbol{W}}^{b}_{i}\boldsymbol{\theta}_{i}+\tilde{\boldsymbol{u}}^{b}_{i}, \label{8}
+\end{align}
+where $\tilde{\boldsymbol{y}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{y}^{b}_{i}= \left(\tilde{\boldsymbol{y}}^{b}_{i,1}, \ldots, \tilde{\boldsymbol{y}}^{b}_{i,T-2} \right)^{'}$,  $\tilde{\boldsymbol{W}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{W}^{b}_{i}$ and $\tilde{\boldsymbol{u}}^{b}_{i}=\boldsymbol{F}^{b}\boldsymbol{u}^{b}_{i},$ and $b=2$.
+
+
+
+
+
+
+
+\begin{myAssu}
+$\boldsymbol{x}_{i,t}$ and $u^{b}_{i,t}$ are independently distributed for all $t$, $i$ and $b$ .
+\end{myAssu}
+
+\begin{myAssu}
+$\boldsymbol{\theta}_{i}=\boldsymbol{\theta}+\boldsymbol{\lambda}_{i}$, \,\,$\boldsymbol{\lambda}_{i} \overset{i.i.d.}{\sim}(\boldsymbol{0},\, \boldsymbol{\Sigma}_{\lambda})$, where $\boldsymbol{\Sigma}_{\lambda}$ is a fixed positive definite matrix.
+\end{myAssu}
+
+
+
+
+
+
+\subsection{IV estimation method and asymptotic property}
+\citet{Norkute:2019} propose an IV estimator in dynamic heterogeneous panel data model.
+They use current and lagged values of $\boldsymbol{X}_{i}$ as instruments, as
+\begin{align}
+\tilde{\boldsymbol{Z}}^{b}_{i}=\left(\boldsymbol{F}^{b} \boldsymbol{X}_{i}, \boldsymbol{F}^{b} \boldsymbol{X}_{i,-1} \right),
+\end{align}
+where $\tilde{\boldsymbol{Z}}^{b}_{i}$ is a $(T-1) \times  2k$ vector with $\boldsymbol{X}_{i}=\left(\boldsymbol{x}_{i,1}, \ldots, \boldsymbol{x}_{i,T}  \right)^{'}$ and $\boldsymbol{X}_{i,-1}=\left(\boldsymbol{x}_{i,0}, \ldots, \boldsymbol{x}_{i,T-1}  \right)^{'}$. \\
+
+\begin{myAssu}
+$\boldsymbol{A}^{b}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{A}}^{b}_{i,T}$ has full column rank, $\boldsymbol{B}^{b}_{i}=\plim_{T \to \infty}\tilde{\boldsymbol{B}}^{b}_{i,T}$ and $\boldsymbol{\Sigma}^{b}_{i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \tilde{\boldsymbol{u}}_{i}^{b'}\tilde{\boldsymbol{Z}}^{b}_{i}$ has positive definite, uniformly, where $\tilde{\boldsymbol{A}}^{b}_{i,T}= \frac{1}{T}\tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{W}}^{b}_{i}$ and $\tilde{\boldsymbol{B}}^{b}_{i,T}= \frac{1}{T}\tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{Z}}^{b}_{i}$
+with $b = 1$ corresponds to the fixed effects model while $b = 2$ corresponds to the trend models.
+\end{myAssu}
+
+Then, the IV estimator can be expressed as
+\begin{align}
+\boldsymbol{\hat{\theta}}^{b}_{i}=\left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{g}}^{b}_{i,T},
+\end{align}
+where
+\begin{align}
+\tilde{\boldsymbol{g}}^{b}_{i,T}=\frac{1}{T}\tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{y}}^{b}_{i}.
+\end{align}
+
+
+
+
+From above equation, we have
+\begin{align}
+\boldsymbol{\hat{\theta}}^{b}_{i}=\boldsymbol{\theta}_{i}+\left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\left(T^{-1}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \right) \label{14}
+\end{align}
+
+
+From assumption, we know $\boldsymbol{x}_{i,t}$ is strictly exogenous regressors. Then, we know $ E\left(\boldsymbol{z}_{i,t} \boldsymbol{u}_{it}  \right)=0.$
+Therefore, we can show that
+\begin{align}
+\boldsymbol{\hat{\theta}}^{b}_{i}\overset{p}{\to} \boldsymbol{\theta}_{i}.
+\end{align}
+
+
+From $(\ref{14})$, we know
+
+\begin{align}
+\sqrt{T}\left(\boldsymbol{\hat{\theta}}^{b}_{i}-\boldsymbol{\theta}_{i} \right)=\left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\left(T^{-1/2}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \right)
+\end{align}
+Then, the property of $T^{-1/2}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} $ is given by following proposition.\\
+\begin{myProp}
+Under above assumptions, as $\left(N, T \right)\overset{j}{\to} \infty$ such that $N/T \to c$ with $0 < c<\infty $, for each $i$, we have
+\begin{align}
+T^{-1/2}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}^{b}_{i} \right).
+\end{align}
+\end{myProp}
+
+Thus, IV  estimator, $\hat{\boldsymbol{\theta}}^{b}_{ i}$ is $\sqrt{T}$ consistent to $\boldsymbol{\theta}_{i}$ and this estimator does not have Nickell's bias. Then, we have following theorem\\
+$\mathbf{Theorem \,\,1}$ \\
+As $\left(N,T \right)\overset{j}{\to} \infty $ such that $N/T \to c$ with $0< c< \infty$. for each $i$,
+\begin{align}
+\sqrt{T}\left(\hat{\boldsymbol{\theta}}^{b}_{i}-\boldsymbol{\theta}_{i}  \right)\overset{d}{\to} N \left(\boldsymbol{0},\,\left(\boldsymbol{A}_{i}^{b'}\tilde{\boldsymbol{B}}_{i}^{b -1}\boldsymbol{A}^{b}_{i} \right)^{-1}\boldsymbol{A}_{i}^{b'}\tilde{\boldsymbol{B}}_{i}^{b -1}   \boldsymbol{\Sigma}^{b}_{i}\tilde{\boldsymbol{B}}_{i}^{b -1} \boldsymbol{A}^{b}_{i}\left(\boldsymbol{A}_{i}^{b'}\tilde{\boldsymbol{B}}_{i}^{b -1}\boldsymbol{A}^{b}_{i} \right)\right).
+\end{align}
+
+
+\section{Construction optimal instruments}
+How to select optimal instruments is important issue in empirical studies.
+\citet{Stephen:2001}, \citet{Kuersteiner:2010}, \citet{Ryo:2011}, \citet{Kang:2019} and \citet{Seojeong:2019} propose different methods to construct optimal instruments.
+Here, we try to apply model average approach by \citet{Kuersteiner:2010} in here.
+
+
+If we can observed long past periods variables, we have many instruments. In this case we define our instruments, as
+\begin{align}
+\tilde{\boldsymbol{Z}}^{b(j)}_{i}=\left( \boldsymbol{F}^{b}\boldsymbol{X}_{i}, \boldsymbol{F}^{b} \boldsymbol{X}_{i,-1},\ldots, \boldsymbol{F}^{b} \boldsymbol{X}_{i,-j}  \right),
+\end{align}
+where $\tilde{\boldsymbol{Z}}^{b(j)}_{i}$ is $(T-1) \times  (j+1)k$ matrix with $1\leq j \leq J $ with $J$ is the maximum lags of variables that we can observe. \\
+
+
+
+
+Then, we can define IV estimator, $\hat{\boldsymbol{\theta}}^{b}_{i}$, as
+\begin{align}
+\hat{\boldsymbol{\theta}}^{b}_{i}= \left( \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b(j)}_{i} \tilde{\boldsymbol{W}}^{b}_{i} \right)^{-1} \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b(j)}_{i} \tilde{\boldsymbol{y}}^{b}_{i},
+\end{align}
+where $\boldsymbol{P}^{b(j)}_{i}=\tilde{\boldsymbol{Z}}^{b(j)}_{i} \left(\tilde{\boldsymbol{Z}}^{b(j)'}_{i}\tilde{\boldsymbol{Z}}^{b(j)}_{i} \right)^{-1}\tilde{\boldsymbol{Z}}^{b(j)'}_{i}$.
+
+If we can observe long lagged length from data, we can use more instruments.
+In empirical study, researchers do not use all past variables as instruments because there are trade off between efficiency and bias.
+But we have not clearly know that the effect of using long lagged length  IV estimator in heterogeneous dynamic panel data model. And how to select the instruments to balance the bias and efficiency.
+
+\citet{Kuersteiner:2010} provided model averaging two stage least squares estimator to balance the bias and efficiency. We try to follow this method to construct the optimal instruments. We define a weighting vector
+\begin{align}
+\boldsymbol{\omega}^{(i)}=\left(\omega^{(i)}_{1}, \ldots,\omega^{(i)}_{J}  \right)^{'},
+\end{align}
+where $\boldsymbol{\omega}^{(i)}$ is a $J \times 1$ vector and $\sum^{J}_{j=1} \omega^{(i)}_{j}=1.$
+Then, we can weight $\boldsymbol{P}^{(j)}_{i}$ as
+\begin{align}
+\boldsymbol{P}^{b}_{i}= \sum^{J}_{j=1} \omega^{(i)}_{j} \boldsymbol{P}^{b(j)}_{i},
+\end{align}
+where $J$ is maximum number of lagged variables that we can observed.
+Our goal is to select $\boldsymbol{\omega}^{(i)}$ to minimize the approximate mean square error, $S^{b}_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)$, where $\boldsymbol{\eta}^{(i)}$ is a $(1+k) \times 1$ fixed parameters vector.
+ In beginning, we consider positive weights, such that $\omega^{(i)}_{j} \in [0,1].$ And we define $\boldsymbol{D}^{b}_{i}=\left( \tilde{\boldsymbol{w}}^{b}_{i,1},\ldots,  \tilde{\boldsymbol{w}}^{b}_{i,T-1} \right)^{'}$ is a $(T-1) \times (1+k)$ matrix. Let $\hat{\boldsymbol{H}}_{i}$ is some estimator of $\boldsymbol{H}_{i}=\frac{\boldsymbol{D}^{b'}_{i}\boldsymbol{D}^{b}_{i}}{T-1}$. Let $\hat{\boldsymbol{\theta}}^{b}_{i}$ is some preliminary estimator, and define the residuals $\hat{\tilde{\boldsymbol{u}}}^{b}_{i}=\tilde{\boldsymbol{y}}^{b}_{i}-\tilde{\boldsymbol{W}}^{b}_{i}\hat{\boldsymbol{\theta}}^{b}_{i}$ that does not depend on the weighting vector.  Let $(T-1) \times (1+k)$ matrix, $\tilde{\boldsymbol{V}}^{b}_{i}$, be some preliminary residual from first stage regression, and $\tilde{\boldsymbol{v}}^{b}_{\eta, i}=\tilde{\boldsymbol{V}}^{b}_{i} \hat{\boldsymbol{H}}_{i}^{-1}\boldsymbol{\eta}^{(i)}$.
+
+ Define
+ \begin{align}
+ \hat{\sigma}^{b 2}_{u, i}=\frac{\hat{\tilde{\boldsymbol{u}}}^{b'}_{i} \hat{\tilde{\boldsymbol{u}}}^{b}_{i}}{T-1}, \,\, \hat{\sigma}^{b2}_{\eta, i}=\frac{\tilde{\boldsymbol{v}}^{b '}_{\eta, i} \tilde{\boldsymbol{v}}^{b}_{\eta, i}}{T-1}, \,\, \hat{\boldsymbol{\sigma}}^{b}_{\eta u, i}=\frac{\tilde{\boldsymbol{v}}^{b'}_{\eta, i} \hat{\tilde{\boldsymbol{u}}}^{b}_{i}}{T-1}.
+ \end{align}
+ Let $\hat{\boldsymbol{v}}^{(j)}_{\eta, i}=\left(\boldsymbol{P}_{i}^{(J)}- \boldsymbol{P}_{i}^{(j)}\right)\tilde{\boldsymbol{W}}^{b}_{i}  \hat{\boldsymbol{H}}^{-1}\boldsymbol{\eta}^{(i)}$ is a $(T-1) \times 1$ vector, and $\hat{\boldsymbol{U}}_{i}=\left(\hat{\boldsymbol{v}}^{(1)}_{\eta, i}, \ldots, \hat{\boldsymbol{v}}^{(J)}_{\eta, i} \right)^{'}\left(\hat{\boldsymbol{v}}^{(1)}_{\eta, i}, \ldots, \hat{\boldsymbol{v}}^{(J)}_{\eta, i} \right)$ is $J \times J$ matrix. Define $\boldsymbol{\Gamma}^{(i)}$ be the $J \times J$ matrix whose $(j^{'}, j)$ element is $min(j^{'}, j)$ and let $K=(1, \ldots, J)^{'}$. The criterion $\hat{S}^{b}_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)$ is
+ \begin{align}
+ \hat{S}^{b}_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)=\hat{\sigma}^{b 2}_{\eta u, i} \frac{(K^{'}\boldsymbol{\omega}^{(i)})^{2}}{T-1}+\hat{\sigma}^{b2}_{u,i}\frac{\boldsymbol{\omega}^{(i)'}\hat{\boldsymbol{U}}_{i}\boldsymbol{\omega}^{(i)}-\hat{\sigma}^{b 2}_{\eta, i}(J-2K^{'}\boldsymbol{\omega}^{(i)}+\boldsymbol{\omega}^{(i)'}\Gamma_{i} \boldsymbol{\omega}^{(i)})}{T-1}.
+ \end{align}
+ Then, we can find the optimal weight,$\boldsymbol{\omega}^{(i)\ast}$ ,by minimize $\hat{S}^{b}_{\eta^{(i)}}(\boldsymbol{\omega}^{(i)})$.
+
+Therefore, we have mean average 2SLS estimator, $\hat{\boldsymbol{\theta}}^{b}_{i}$ ,as
+\begin{align}
+\hat{\boldsymbol{\theta}}^{\ast b}_{i}= \left( \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b}_{i}\left(\boldsymbol{\omega^{(i)\ast}} \right)\tilde{\boldsymbol{W}}^{b}_{i} \right)^{-1} \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b}_{i}\left(\boldsymbol{\omega^{(i)\ast}} \right) \tilde{\boldsymbol{y}}^{b}_{i}.
+\end{align}
+\citet{Xiaohong:2016} also provide an alternative weighting scheme based on weighting individual estimators. This method can be also applied in heterogeneous dynamic panel data model. Also this method could be seen as an alternative method for mean group estimator. It would be interested to compare the performance of these two weighting scheme.  
+
+
+\subsection{Mean group IV estimator }
+Now, we define the mean group estimator of $\boldsymbol{\theta}$:
+\begin{align}
+\hat{\boldsymbol{\theta}}^{b}_{IVMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}^{\ast b}_{i}.
+\end{align}
+From Assumption $(2)$, we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}^{b}_{IVMG}$, as
+\begin{align}
+\hat{\boldsymbol{\theta}}^{\ast b}_{IVMG}-\boldsymbol{\theta}=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}- \boldsymbol{\theta}\right)=\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}- \boldsymbol{\theta}_{i}\right)+\frac{1}{N}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i},
+\end{align}
+where the first of right hand side
+\begin{align}
+\begin{split}
+\frac{1}{N}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}- \boldsymbol{\theta}_{i}\right)&=\frac{1}{N}\sum^{N}_{i=1} \left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\left(T^{-1}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \right) \\
+&= o_{p}\left(1 \right).
+\end{split}
+\end{align}
+Then, we can see
+\begin{align}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}^{b}_{IVMG}-\boldsymbol{\theta}  \right)=\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i}+o_{p} \left(1 \right).
+\end{align}
+As $N \to \infty$, we can see
+\begin{align}
+\frac{1}{\sqrt{N}}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \overset{d}{\to}  N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{\lambda} \right).
+\end{align}
+Therefore, we know that $\hat{\boldsymbol{\theta}}^{b}_{IVMG}$ is $\sqrt{N}$ consistent.
+
+And the variance estimator of $\hat{\boldsymbol{\theta}}_{IVMG}$ is given by
+\begin{align}
+\hat{\boldsymbol{\Sigma}}^{b}_{\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}^{\ast b}_{i}- \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}^{\ast b}_{i}- \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)^{'}. \label{44}
+\end{align}
+Follow \citet{Norkute:2019}, we can show that $\hat{\boldsymbol{\Sigma}}^{b}_{\lambda}$ is consistent and it does not have small $T$ bias.
+Firstly, we decompose $(\ref{44})$ as
+\begin{align}
+\begin{split}
+&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}^{\ast b}_{i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)\left( \hat{\boldsymbol{\theta}}^{\ast b}_{i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}^{b}_{IVMG}\right)^{'}= \\
+& \sum^{N}_{i=1} \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i} \right)^{'}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i}  \right) -\\
+&N\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right). \label{45}
+\end{split}
+\end{align}
+Then we can show consistent of $\hat{\boldsymbol{\Sigma}}^{b}_{\lambda}$ as
+\begin{align}
+\begin{split}
+&\hat{\boldsymbol{\Sigma}}^{b}_{\lambda}-\boldsymbol{\Sigma}^{b}_{\lambda}=
+ \frac{1}{N-1}\sum^{N}_{i=1}\left( \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}-\boldsymbol{\Sigma}^{b}_{\lambda}\right) +\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i} \right)^{'} \\
+&+\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\frac{1}{N-1}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}^{\ast b}_{i}-\boldsymbol{\theta}_{i}  \right) -\\
+&\frac{N}{N-1}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}^{b}_{IVMG} \right)  =o_{p}(1).
+\end{split}
+\end{align}
+
+
+
+
+
+
+Then, we can see that the asymptotic property of $\hat{\boldsymbol{\theta}}_{IVMG} $ as,
+\begin{align}
+\begin{split}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}^{b}_{IVMG}-\boldsymbol{\theta}  \right)&\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}^{b}_{\lambda} \right); \\
+ \hat{\boldsymbol{\Sigma}}^{b}_{\lambda} & \overset{p}{\to}   \boldsymbol{\Sigma}^{b}_{\lambda}.
+\end{split}
+\end{align}
+
+\section{Dynamic heterogeneous panel data model with multifactor error structure}
+Reconsider model $(\ref{1})$ here,
+\begin{align}
+\begin{split}
+y^{b}_{i,t}&=\phi_{i} y^{b}_{i,t-1}+ \boldsymbol{x}^{'}_{i,t}\boldsymbol{\beta}_{i}+u^{b}_{i,t}  \\
+&= \boldsymbol{w}^{b'}_{i,t}\boldsymbol{\theta}_{i}+u^{b}_{i,t}, \,\,\,\, \,\, \,\, \,\,\,\, \,\,\,\, \,\,\,\, \,\, for\,\,i=1,\ldots N;\,t=1,\ldots,T\, , \label{m1}
+\end{split}
+\end{align}
+with
+\begin{align}
+u^{b}_{i,t}=\boldsymbol{\gamma}^{'}_{y,i}\boldsymbol{f}_{y,t}+\varepsilon_{i,t}, 
+\end{align}
+where $\boldsymbol{\gamma}_{y,i}$ is a $m_{y} \times 1$ vector of unobservable factors and $\boldsymbol{f}_{y,t}$ is a $m_{x} \times 1$ vector of factor loading and $\varepsilon_{i,t}$ is an idiosyncratic error. 
+Regressor $\boldsymbol{x}_{i,t}$ follow the process as 
+\begin{align}
+ \boldsymbol{x}_{i,t}=\boldsymbol{\Gamma}^{'}_{x,i}\boldsymbol{f}_{x,t}+ \boldsymbol{v}_{i,t}.
+\end{align}
+Again, we stack the $T$ observations for each $i$ as
+\begin{align}
+\boldsymbol{y}_{i}= \phi_{i} \boldsymbol{y}_{i}+\boldsymbol{W}_{i}\boldsymbol{\theta}_{i}+\boldsymbol{u}_{i}\,\,\,\, with\,\,\boldsymbol{u}_{i}=\boldsymbol{F}_{y}\boldsymbol{\gamma}_{y,i}+\boldsymbol{\varepsilon}_{i},
+\end{align}
+where $\boldsymbol{F}_{y}=\left( \boldsymbol{f}_{y,1}, \boldsymbol{f}_{y,2},\ldots,\boldsymbol{f}_{y,T}  \right)^{'}$ and $\boldsymbol{\varepsilon}_{i}=\left( \varepsilon_{i,1}, \varepsilon_{i,2},\ldots,\varepsilon_{i,T} \right)^{'}$. And the regressor $\boldsymbol{X}_{i}$ as
+\begin{align}
+\boldsymbol{X}_{i}=\boldsymbol{F}_{x}\boldsymbol{\Gamma}_{x,i}+\boldsymbol{V}_{i},
+\end{align}
+where $\boldsymbol{F}_{x}=\left( \boldsymbol{f}_{x,1}, \boldsymbol{f}_{x,1},\ldots,\boldsymbol{f}_{x,T} \right)^{'}$ and $\boldsymbol{V}_{i}=\left( \boldsymbol{v}_{i,1}, \boldsymbol{v}_{i,2},\ldots,\boldsymbol{v}_{i,T}.  \right)$
+Follow \citet{bai:2003} and \citet{bai:2009}, we can use principal components approach to estimate $\boldsymbol{F}_{x}$ and $\boldsymbol{F}_{x,-1}$. Then, we can build the projection matrices as
+\begin{align}
+\boldsymbol{M}_{\hat{F}_{x}}=\boldsymbol{I}_{T}-\hat{\boldsymbol{F}}_{x}\left(\hat{\boldsymbol{F}}^{'}_{x} \hat{\boldsymbol{F}}_{x}   \right)^{-1}\hat{\boldsymbol{F}}^{'}_{x}; \,\, \boldsymbol{M}_{\hat{F}_{x,-1}}=\boldsymbol{I}_{T}-\hat{\boldsymbol{F}}_{x,-1}\left(\hat{\boldsymbol{F}}^{'}_{x,-1} \hat{\boldsymbol{F}}_{x,-1}   \right)^{-1}\hat{\boldsymbol{F}}^{'}_{x,-1}.
+\end{align}
+Then, we can project out factor structure in $\boldsymbol{X}_{i}$.  Premultiplying $\boldsymbol{X}_{i}$ by $\boldsymbol{M}_{\hat{F}_{x}}$, we have $\boldsymbol{M}_{\hat{F}_{x}}\boldsymbol{X}_{i}=\boldsymbol{M}_{\hat{F}_{x}}\boldsymbol{V}_{i}.$ And we assume $\boldsymbol{V}_{i}$ is independent of $\boldsymbol{\varepsilon}$, $\boldsymbol{F}_{x}$, $\boldsymbol{F}_{y}$ and $\boldsymbol{\gamma}_{y,i}$. Then, we can see that $E\left(\boldsymbol{X}^{'}_{i}\boldsymbol{M}_{\hat{F}_{x}}\boldsymbol{u}_{i} \right)=E\left(  \boldsymbol{V}_{i}^{'}\boldsymbol{M}_{F_{x}}\boldsymbol{u}_{i} \right).$
+Therefore, using the similar approach in section $1$, we can collect the set of instrumental variables:
+\begin{align}
+\boldsymbol{Z}_{i}=\left( \boldsymbol{M}_{F_{x}}\boldsymbol{X}_{i}, \boldsymbol{M}_{F_{x,-1}}\boldsymbol{X}_{i,-1},\ldots  ,\boldsymbol{M}_{F_{x,-j}}\boldsymbol{X}_{i,-j}, \right)
+\end{align}
+Define $\boldsymbol{P}^{(j)}_{i}$ as
+\begin{align}
+\boldsymbol{P}^{(j)}_{i}=\boldsymbol{Z}^{(j)}_{i} \left(\boldsymbol{Z}^{(j)'}_{i}\boldsymbol{Z}^{(j)}_{i} \right)^{-1}\boldsymbol{Z}^{(j)'}_{i}
+\end{align}
+where $\boldsymbol{Z}^{(j)}_{i}$ is $T \times  (j+1)k$ matrix with $1\leq j \leq J$ with $J$ is the maximum lags of variables that we can observe.
+
+Then, we can show 2SLS estimator of $\boldsymbol{\theta}_{i}$ :
+\begin{align}
+\hat{\boldsymbol{\theta}}_{i}= \left( \boldsymbol{W}^{'}_{i}\boldsymbol{P}^{(j)}_{i} \boldsymbol{W}^{b}_{i} \right)^{-1} \boldsymbol{W}^{'}_{i}\boldsymbol{P}^{(j)}_{i} \boldsymbol{y}_{i},
+\end{align}
+
+
+\subsection{Optimal number of instrument variables}
+Again, to select the number of instrument variables, we can follow the approach by \citet{Kuersteiner:2010} 
+
+
+\citet{Kuersteiner:2010} provided model averaging two stage least squares estimator to balance the bias and efficiency. We try to follow this method to construct the optimal instruments. We define a weighting vector
+\begin{align}
+\boldsymbol{\omega}^{(i)}=\left(\omega^{(i)}_{1}, \ldots,\omega^{(i)}_{J}  \right)^{'},
+\end{align}
+where $\boldsymbol{\omega}^{(i)}$ is a $J \times 1$ vector and $\sum^{J}_{j=1} \omega^{(i)}_{j}=1.$
+Then, we can weight $\boldsymbol{P}^{(j)}_{i}$ as
+\begin{align}
+\boldsymbol{P}_{i}= \sum^{J}_{j=1} \omega^{(i)}_{j} \boldsymbol{P}^{(j)}_{i},
+\end{align}
+where $J$ is maximum number of lagged variables that we can observed.
+Our goal is to select $\boldsymbol{\omega}^{(i)}$ to minimize the approximate mean square error, $S_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)$, where $\boldsymbol{\eta}^{(i)}$ is a $(1+k) \times 1$ fixed parameters vector.
+ In beginning, we consider positive weights, such that $\omega^{(i)}_{j} \in [0,1].$ And we define $\boldsymbol{D}_{i}=\left( \tilde{\boldsymbol{w}}_{i,1},\ldots,  \tilde{\boldsymbol{w}}_{i,T-1} \right)^{'}$ is a $T \times (1+k)$ matrix. Let $\hat{\boldsymbol{H}}_{i}$ is some estimator of $\boldsymbol{H}_{i}=\frac{\boldsymbol{D}^{'}_{i}\boldsymbol{D}_{i}}{T}$. Let $\hat{\boldsymbol{\theta}}_{i}$ is some preliminary estimator, and define the residuals $\hat{\tilde{\boldsymbol{u}}}_{i}=\boldsymbol{y}_{i}-\boldsymbol{W}_{i}\hat{\boldsymbol{\theta}}_{i}$ that does not depend on the weighting vector.  Let $T \times (1+k)$ matrix, $\boldsymbol{V}_{i}$, be some preliminary residual from first stage regression, and $\boldsymbol{v}_{\eta, i}=\boldsymbol{V}_{i} \hat{\boldsymbol{H}}_{i}^{-1}\boldsymbol{\eta}^{(i)}$.
+
+ Define
+ \begin{align}
+ \hat{\sigma}^{ 2}_{u, i}=\frac{\hat{\boldsymbol{u}}^{'}_{i} \hat{\boldsymbol{u}}_{i}}{T}, \,\, \hat{\sigma}^{2}_{\eta, i}=\frac{\boldsymbol{v}^{ '}_{\eta, i} \boldsymbol{v}_{\eta, i}}{T}, \,\, \hat{\boldsymbol{\sigma}}_{\eta u, i}=\frac{\boldsymbol{v}^{'}_{\eta, i} \hat{\boldsymbol{u}}_{i}}{T}.
+ \end{align}
+ Let $\hat{\boldsymbol{v}}^{(j)}_{\eta, i}=\left(\boldsymbol{P}_{i}^{(J)}- \boldsymbol{P}_{i}^{(j)}\right)\boldsymbol{W}_{i}  \hat{\boldsymbol{H}}^{-1}\boldsymbol{\eta}^{(i)}$ is a $(T) \times 1$ vector, and $\hat{\boldsymbol{U}}_{i}=\left(\hat{\boldsymbol{v}}^{(1)}_{\eta, i}, \ldots, \hat{\boldsymbol{v}}^{(J)}_{\eta, i} \right)^{'}\left(\hat{\boldsymbol{v}}^{(1)}_{\eta, i}, \ldots, \hat{\boldsymbol{v}}^{(J)}_{\eta, i} \right)$ is $J \times J$ matrix. Define $\boldsymbol{\Gamma}^{(i)}$ be the $J \times J$ matrix whose $(j^{'}, j)$ element is $min(j^{'}, j)$ and let $K=(1, \ldots, J)^{'}$. The criterion $\hat{S}_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)$ is
+ \begin{align}
+ \hat{S}_{\eta^{(i)}}\left(\boldsymbol{\omega^{(i)}} \right)=\hat{\sigma}^{2}_{\eta u, i} \frac{(K^{'}\boldsymbol{\omega}^{(i)})^{2}}{T}+\hat{\sigma}^{2}_{u,i}\frac{\boldsymbol{\omega}^{(i)'}\hat{\boldsymbol{U}}_{i}\boldsymbol{\omega}^{(i)}-\hat{\sigma}^{ 2}_{\eta, i}(J-2K^{'}\boldsymbol{\omega}^{(i)}+\boldsymbol{\omega}^{(i)'}\Gamma_{i} \boldsymbol{\omega}^{(i)})}{T}.
+ \end{align}
+ Then, we can find the optimal weight,$\boldsymbol{\omega}^{(i)\ast}$ ,by minimize $\hat{S}_{\eta^{(i)}}(\boldsymbol{\omega}^{(i)})$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Therefore, we have mean average 2SLS estimator, $\hat{\boldsymbol{\theta}}^{b}_{i}$ ,as
+\begin{align}
+\hat{\boldsymbol{\theta}}^{\ast b}_{i}= \left( \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b}_{i}\left(\boldsymbol{\omega^{(i)\ast}} \right)\tilde{\boldsymbol{W}}^{b}_{i} \right)^{-1} \tilde{\boldsymbol{W}}^{b'}_{i}\boldsymbol{P}^{b}_{i}\left(\boldsymbol{\omega^{(i)\ast}} \right) \tilde{\boldsymbol{y}}^{b}_{i}.
+\end{align}
+
+
+
+
+
+
+\section{Monte Carlo simulation design}
+It has been found that the IV estimator exhibit systematic bias in the model with heterogeneous slops by \citet{Norkute:2019}. And $IVMG^{c}$ is outperform $CCEMG$ in terms of bias, RMSE, size and power.
+Therefore, we would like to see the behaviour of $IV^{a}, IV^{c}, IVMG^{a}, IVMG^{c}, IV^{opt},$ and $IVMG^{opt} $ estimators in this simple simulation, where $a$ corresponds to two instruments are used and $c$  corresponds to three instruments are used while $opt$ corresponds MA2SLS estimator.
+
+\subsection{dynamic heterogeneous panels data model without multi-factor error structure}
+The data generating process:
+\begin{align}
+\begin{split}
+y_{i,t}&= \phi_{i} y_{i,t-1}+\beta_{1 i}x_{1 i,t}+\alpha_{i}+u_{i,t}, \,\, for\,\,i=1,\ldots N;\,t=-49-(J+1),\ldots,T\, , \\ \label{M1}
+x_{1 i,t}&=\rho x_{1 i,t-1}+\tau_{\alpha} \alpha_{i} +v_{i,t},
+\end{split}
+\end{align}
+where $u_{i,t}\overset{i.i.d.}{\sim} \mathcal{N}(0,\,1)\,,$ and $v_{ i,t}\overset{i.i.d.}{\sim} \mathcal{N}(0,\,1), \alpha_{i}\overset{i.i.d.}{\sim} \mathcal{N}(0,\,1) \, ,\rho \in \left\{0, 0.5  \right\}  \, \, ,\tau_{\alpha}=0.5, J=3,4,5,6.$
+
+The slope coefficients are generated as
+\begin{align}
+\phi_{i}=\phi+\eta_{\phi i};\,\, \beta_{1,i}=\beta_{1}+\eta_{\beta_{1} i}.
+\end{align}
+Here we consider $\phi \in \left\{0.2, 0.5, 0.8 \right\}$, $\beta_{1}=3$. For the design of heterogenous slopes, $\eta_{\phi i} \overset{i.i.d.}{\sim} U\left( -c, c\right)$, and
+\begin{align}
+\eta_{\beta_{1} i}= \left(1-\rho^{2}_{\beta}  \right)^{1/2}\eta_{\phi i}.
+\end{align}
+Here, we set $c=0.2,\, \rho_{\beta}=0.4.$
+
+
+ The first $50$ observations are discarded. For the $(T,N)$, we consider $T \in \left\{25, 50, 100, 200  \right\}$ and  $N \in \left\{25, 50, 100, 200  \right\}.$
+
+
+
+
+\subsection{Dynamic heterogeneous panels data model with multi-factor error structure}
+This Monte Carlo simulation design same as \citet{Norkute:2019}.
+For convenience, we rewrite the data generating process as bellow
+\begin{align}
+y_{i,t}=\alpha_{i}+\phi_{i} y_{i,t-1}+ \sum^{k}_{\ell=1}\beta_{\ell i}x_{\ell i,t}+u_{i,t}, \,\, for\,\,i=1,\ldots N;\,t=-49,\ldots,T\, . \\ \label{M1}
+\end{align}
+We allow error factor structure in the model as
+\begin{align}
+u_{i,t}=    \sum^{m_{y}}_{s=1}\gamma^{0}_{si}f^{0}_{s,t} +\varepsilon_{i,t},
+\end{align}
+where
+\begin{align}
+f^{0}_{s,t}=\rho^{0}_{s,t} f^{0}_{s,t-1}+\left( 1-\rho^{2}_{fs} \right)^{1/2}\zeta_{s,t},
+\end{align}
+with $\zeta_{s,t} \overset{i.i.d.}{\sim} N(0,1)$ for $s=1,\ldots m_{y}$. We assume $k=2$ and $m_{y}=1+k=3$ and set $\rho^{0}_{s,t}=0.5$ for all $s$. The error term, $\varepsilon_{i,t}$, setting as
+\begin{align}
+\varepsilon_{i,t}=\varsigma_{\varepsilon}\sigma_{it}\left(\epsilon_{it}-1 \right)/\sqrt{2},
+\end{align}
+where $ \epsilon_{it}\overset{i.i.d.}{\sim} \chi^{2}_{1},\, \sigma^{2}_{it}=\eta_{i}\varphi_{t}, \,\eta_{i}\overset{i.i.d.}{\sim}\chi^{2}_{2}/2,$  and  $\varphi_{t}=t/T\, for \,\, t=0,\ldots, T.$ And we set
+\begin{align}
+\varsigma_{\varepsilon}=\frac{\pi_{\mu}}{1-\pi_{\mu}}m_{y}.
+\end{align}
+we set $\pi_{\mu} \in \left\{ 3/4\right\}.$
+
+The process of regressors is
+\begin{align}
+x_{\ell it}=\mu_{\ell i}++\sum^{k}_{\ell=1}\phi_{\ell i}x_{\ell i,t-1}+\sum^{m_{x}}_{s=1}\gamma^{0}_{\ell si}f^{0}_{s,t}+v_{\ell it}, \,\, for\,\,i=1,\ldots N;\,t=-49,\ldots,T\,; \, \ell=1,2.
+\end{align}
+We set number of factor, $m_{x}$, is $2$. Therefore, $\boldsymbol{f}^{0}_{y,t}=\left(f^{0}_{1t}, f^{0}_{2t},f^{0}_{3t}  \right)^{'}$ and $\boldsymbol{f}^{0}_{x,t}=\left(f^{0}_{1t}, f^{0}_{2t}  \right)^{'}.$
+We set
+\begin{align}
+v_{\ell i,t}=\rho_{v, \ell}v_{\ell i,t-1}+\left( 1-\rho^{2}_{v, \ell} \right)^{\frac{1}{2}}\varpi_{\ell i,t},  for \, \ell=1,2,
+\end{align}
+  where $\rho_{v, \ell}=0.5$ for all $\ell$.
+The individual effect is
+\begin{align}
+ \alpha^{\ast}_{i}\overset{i.i.d.}{\sim} N\left(0, (1-\rho_{i})^{2} \right), \,\, \mu^{\ast}_{\ell i}=\rho_{\mu,\ell}\alpha^{\ast}_{i}+\left( 1-\rho^{2}_{\mu,\ell} \right)^{1/2}\omega_{\ell i},
+\end{align}
+where $\omega \overset{i.i.d.}{\sim}N\left(0, (1-\rho_{i})^{2} \right)$ and $\rho_{\mu,\ell}=0.5$.
+
+Now, we define the factor loading in $u_{i,t}$ are generated as $\gamma^{0\ast}_{si}\overset{i.i.d.}{\sim}N\left(0, 1 \right)$, for $s=1,\ldots, m_{y}=3$, and the factor loading in $x_{1it}$ and $x_{2it}$ are drawn as
+\begin{align}
+\begin{split}
+\gamma^{0\ast}_{1si}&=\rho_{\gamma,1s} \gamma^{0\ast}_{3i}+\left(1-\rho^{2}_{\gamma,1s}  \right)^{1/2}\xi_{1si};\,\xi_{1si}\overset{i.i.d.}{\sim}N\left(0, 1 \right); \\
+\gamma^{0\ast}_{2si}&=\rho_{\gamma,2s} \gamma^{0\ast}_{si}+\left(1-\rho^{2}_{\gamma,2s}  \right)^{1/2}\xi_{2si};\,\xi_{2si}\overset{i.i.d.}{\sim}N\left(0, 1 \right);
+\end{split}
+\end{align}
+for $s=1,\ldots, m_{x}=2$. We set $\rho_{\gamma, 11}=\rho_{\gamma, 12} \in \left\{ 0.5 \right\}$ and $\rho_{\gamma, 21}=\rho_{\gamma, 22}=0.5.$
+The factor loading are generated as
+\begin{align}
+\boldsymbol{\Gamma}=\boldsymbol{\Gamma}^{0}+\boldsymbol{\Gamma}^{0\ast}_{i}
+\end{align}
+where
+\begin{align}
+\boldsymbol{\Gamma}^{0}_{i}=
+\begin{bmatrix}
+\gamma^{0}_{1i} & \gamma^{0}_{11i} & \gamma^{0}_{21i} \\
+\gamma^{0}_{2i} & \gamma^{0}_{12i} & \gamma^{0}_{22i} \\
+\gamma^{0}_{3i} &  0               &     0
+\end{bmatrix}
+\end{align}
+and
+\begin{align}
+\boldsymbol{\Gamma}^{0\ast}_{i}=
+\begin{bmatrix}
+\gamma^{0\ast}_{1i} & \gamma^{0\ast}_{11i} & \gamma^{0\ast}_{21i} \\
+\gamma^{0\ast}_{2i} & \gamma^{0\ast}_{12i} & \gamma^{0\ast}_{22i} \\
+\gamma^{0\ast}_{3i} &  0               &     0
+\end{bmatrix}.
+\end{align}
+We set
+\begin{align}
+\boldsymbol{\Gamma}^{0}=
+\begin{bmatrix}
+1/4 & 1/4 & -1 \\
+1/2 & -1  & 1/4 \\
+1/2 & 0   & 0
+\end{bmatrix} .
+\end{align}
+And
+\begin{align}
+\alpha_{i}=\alpha+ \alpha^{\ast}_{i}, \, \mu_{\ell i}= \mu_{\ell}+\mu^{\ast}_{\ell i},
+\end{align}
+where $\alpha=1/2$, $\mu_{1}=1$, $\mu_{2}=-1/2$.
+
+The slope coefficients are generated as
+\begin{align}
+\phi_{i}=\phi+\eta_{\phi i},\,\, \beta_{1,i}=\beta_{1}+\eta_{\beta_{1} i}\, and\, \beta_{2,i}=\beta_{2}+\eta_{\beta_{2}i}.
+\end{align}
+Here we consider $\phi \in \left\{0.5\right\}$, $\beta_{1}=3$ and $\beta_{2}=1$. For the design of heterogenous slopes, $\eta_{\phi i} \overset{i.i.d.}{\sim} U\left( -c, c\right)$, and
+\begin{align}
+\eta_{\beta_{\ell}i}=\left[(2c)^{2}/12 \right]\rho_{\beta}\xi_{\beta \ell i}+ \left(1-\rho^{2}_{\beta}  \right)^{1/2}\eta_{\phi i},
+\end{align}
+where
+\begin{align}
+\xi_{\beta \ell i}=\frac{\bar{v^{2}_{\ell i}}- \bar{v^{2}_{\ell}}}{\left[ N^{-1}\sum^{N}_{i=1} \left( \bar{v^{2}_{\ell i}}- \bar{v^{2}_{\ell }}\right)^{2} \right]^{1/2} },
+\end{align}
+with $\bar{v^{2}_{ell i}}=T^{-1}\sum^{T}_{t=1}v^{2}_{\ell i t}$, $\bar{v^{2}_{\ell}}=N^{-1} \sum^{N}_{i=1} \bar{v^{2}_{\ell i}}$, for $\ell=1,2.$
+Here, we set $c=0.2,\, \rho_{\beta}=0.4$ for $\ell=1,2.$ And
+\begin{align}
+\varsigma^{2}_{v}=\varsigma^{2}_{\varepsilon}\left[SNR-\frac{\rho^{2}_{v}}{1-\rho^{2}_{v}}   \right]\left(\frac{\beta^{2}_{1}+\beta^{2}_{2}}{1-\rho^{2}_{v}}  \right)^{-1},
+\end{align}
+
+where $SNR=4$. For the $(T,N)$, we consider $T \in \left\{25, 50, 100, 200  \right\}$ and  $N \in \left\{25, 50, 100, 200  \right\}.$
+
+
+
+
+
+
+\newpage
+\appendix
+\appendixpage
+\section{Asymptotic property of LS estimator}
+
+
+Based on heterogenous dynamic panel data model $(\ref{1})$, we can obtain fixed effect estimator as
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LS,i}=
+\begin{pmatrix}
+\hat{\phi}_{i} \\
+\hat{\beta}_{i}
+\end{pmatrix}=
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
+\end{pmatrix}^{-1}
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{y}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t}}{T}
+\end{pmatrix},
+\end{align}
+
+where $\tilde{y}_{i,t}=y_{i,t}-\bar{y}_{i}$, $\tilde{y}_{i,t-1}=y_{i,t-1}-\bar{y}_{i,-1}\iota_{T}$ and $\tilde{x}_{i,t}=x_{i,t}-\bar{x}_{i}$ with $\bar{y}_{i}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t}$, $\bar{y}_{i,-1}=\frac{1}{T}\sum^{T}_{t=1}y_{i,t-1}$,  $\bar{x}_{i}=\frac{1}{T}\sum^{T}_{t=1}x_{i,t}$.  Under equation $(\ref{1})$, we have
+\begin{align}
+\begin{pmatrix}
+\hat{\phi}_{i}-\phi_{i} \\
+\hat{\beta}_{i}-\beta_{i}
+\end{pmatrix}=
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}^{2}_{i,t-1}}{T} & \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{x}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{y}_{i,t-1}}{T} &  \frac{\sum^{T}_{t=1}\tilde{x}_{i,t}^{2}}{T}
+\end{pmatrix}^{-1}
+\begin{pmatrix}
+\frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \\
+\frac{\sum^{T}_{t=1}\tilde{x}_{i,t}\tilde{u}_{i,t}}{T}
+\end{pmatrix},
+\end{align}
+where $\tilde{u}_{i,t}$ is $u_{i,t}-\bar{u}_{i}$ with $\bar{u}_{i}=\frac{1}{T}\sum^{T}_{t=1}u_{i,t}.$
+
+
+Now, we can investigate asymptotic bias by taking the probability limit as
+\begin{align}
+A^{(1)}_{\phi i}=\plim_{T  \rightarrow \infty}\left( \frac{\sum^{T}_{t=1}\tilde{y}_{i,t-1}\tilde{u}_{i,t}}{T} \right). \label{11}
+\end{align}
+Then $A^{(1)}_{i}$ can be taken expectations as
+\begin{align}
+\begin{split}
+A^{(1)}_{\phi i}&=E\left(y_{i,t-1}-\bar{y}_{i,-1} \right) \left(u_{i,t}-\bar{u}_{i} \right) \\
+&= E\left( y_{i,t-1}u_{i,t}\right) - E\left( y_{i,t-1} \bar{u}_{i}  \right)-E\left(\bar{y}_{i,-1}   u_{i,t}\right)+E\left(\bar{y}_{i,-1}  \bar{u}_{i}\right),
+\end{split}
+\end{align}
+where $E\left( y_{i,t-1}u_{i,t}\right)=0$.
+
+And we assume $y_{i,t}$ has started from a long time period in the past, so we have
+\begin{align}
+y_{i,t}=\frac{\alpha_{i}}{\left(1-\phi_{i} \right)}+\sum^{\infty}_{s=0}\beta_{i}\phi^{s}_{i}x_{i,t -s}+\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s},
+\end{align}
+
+Then, we have
+\begin{align}
+\begin{split}
+A^{(1)}_{\phi i}&=-E\left( \left(\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right) \left(\frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right)  \right)-E\left(\frac{u_{i,t}}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)+ \\
+&\left(\frac{1}{T}\sum^{T}_{t=1}\sum^{\infty}_{s=0}\phi^{s}_{i}u_{i,t-s-1} \right)\left( \frac{1}{T}\sum^{T}_{t=1}u_{i,t} \right). \label{12}
+\end{split}
+\end{align}
+ Hence, from above equation, we have
+ \begin{equation}
+\begin{split}
+A^{(1)}_{\phi i}=&-\dfrac{1}{T} E\left\{  \left( u_{i,t-1}+u_{i,t-2}\phi_{i}^{1}+u_{i,t-3}\phi_{i}^{2}+\ldots\right)\left(u_{i,1}+\ldots+u_{i,t-1}+u_{i,t}+\ldots+u_{i,T}\right) \right\} -\\
+ &\dfrac{1}{T} E \left\{  u_{i,t}\sum^{T}_{s=1}\left( u_{i,s-1}\phi_{i}^{0}+u_{i,s-2}\phi_{i}^{1}+\ldots+u_{i,s-t-1}\phi_{i}^{t}+\ldots+u_{i,s-T-1}\phi_{i}^{T}+\ldots \right)  \right\}  + \\
+ +& \dfrac{1}{T} E\{ \left( \sum^{T}_{t=1}u_{i,t-1}\phi_{i}^{0}+\sum^{T}_{t=1}u_{i,t-2}\phi_{i}^{1}+\ldots+\sum^{T}_{t=1}u_{i,-1}\phi_{i}^{t}+\ldots
++\sum^{T}_{t=1}u_{it-T-1}\phi_{i}^{T}+\ldots \right)\\
+ &\left(\dfrac{1}{T}\sum^{T}_{t=1}u_{i,t}\right) \} \\
+ =&-\dfrac{\sigma_{u}^{2}}{T}\dfrac{(1-\phi_{i}^{t-1})}{1-\phi_{i}}-\dfrac{\sigma^{2}_{u}}{T}\dfrac{(1-\phi_{i}^{T-t})}{(1-\phi_{i})}+\dfrac{\sigma^{2}_{u}}{T} \left( \dfrac{1}{1-\phi_{i}}-\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})^{2}}\right) \\
+ =&-\dfrac{\sigma_{u}^{2}}{T(1-\phi_{i})}\left( 1-\phi_{i}^{t-1}-\phi_{i}^{T-t}+\dfrac{1}{T}\dfrac{(1-\phi_{i}^{T})}{(1-\phi_{i})}  \right).
+ \end{split}
+\end{equation}
+
+
+Therefore, we can see the bias of $\hat{\phi}_{i}$ is $O\left(T^{-1}\right)$.
+
+To be more compact ,we can rewrite the model as,
+\begin{align}
+\tilde{\boldsymbol{y}}_{i}=\tilde{\boldsymbol{W}}_{i}\boldsymbol{\theta}_{i}+\tilde{\boldsymbol{u}}_{i},
+\end{align}
+where $\tilde{\boldsymbol{y}}_{i}=\left(\tilde{\boldsymbol{y}}_{i,1},\ldots, \tilde{\boldsymbol{y}}_{i,T}  \right)^{'}$ is $T \times 1$ vector,  $\tilde{\boldsymbol{W}}_{i}=\left( \tilde{\boldsymbol{w}}_{i,1},\ldots, \tilde{\boldsymbol{w}}_{i,T} \right)^{'}$ is $T \times 2$ matrix and $\tilde{\boldsymbol{u}}_{i}=\left(\tilde{\boldsymbol{u}}_{i,1}, \ldots, \tilde{\boldsymbol{u}}_{i,T} \right)$ is $T \times 1$ vector with $\tilde{\boldsymbol{w}}_{i,t}=\left(y_{i,t-1}-\bar{y}_{i,-1}, x_{i,t}-\bar{x}_{i}  \right)^{'}$, for $t=1,\ldots, T$ and $i=1,\ldots, N.$
+
+Also, we define our interested parameter as
+\begin{align}
+\left(\phi_{i},\beta_{i}  \right)^{'}=\boldsymbol{\theta}_{i}=\boldsymbol{\theta}+\boldsymbol{\lambda}_{i},
+\end{align}
+where $\boldsymbol{\lambda}_{i}\overset{i.i.d.}{\sim} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\lambda} \right).$
+The lest square estimator, $\hat{\boldsymbol{\theta}}_{LS,i}$, can be expressed as
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LS,i}=\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T}. \label{13}
+\end{align}
+
+From above discussion and assumptions, we have following theorem \\
+\begin{myTheo}
+\begin{align}
+\sqrt{T}\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i}\right) \overset{d}{\to} N \left(\boldsymbol{0}, \boldsymbol{Q}_{i}^{-1}\boldsymbol{\Sigma}_{LS,i}\boldsymbol{Q}_{i}^{-1}  \right),
+\end{align}
+where $\boldsymbol{\Sigma}_{LS,i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{u}}_{i} \tilde{\boldsymbol{u}}^{'}_{i}  \tilde{\boldsymbol{W}}_{i} $ and $\boldsymbol{Q}_{i}=\plim_{T \to \infty} T^{-1}\tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{W}}_{i}$
+\end{myTheo}
+
+
+
+\subsection{Asymptotic property of Mean group LS estimator }
+Now, we define the mean group estimator of $\boldsymbol{\theta}$:
+\begin{align}
+\hat{\boldsymbol{\theta}}_{LSMG}=\frac{1}{N}\sum^{N}_{i=1}\hat{\boldsymbol{\theta}}_{LSi}.
+\end{align}
+And we can show that the asymptotic property of $\hat{\boldsymbol{\theta}}_{LSMG}$, as
+\begin{align}
+\begin{split}
+\hat{\boldsymbol{\theta}}_{LSMG}&=N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{y}}_{i}}{T} \\
+&=\bar{\boldsymbol{\theta}}+N^{-1}\sum^{N}_{i=1}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1} \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T},
+\end{split}
+\end{align}
+where $\bar{\boldsymbol{\theta}}=N^{-1}\sum^{N}_{i=1}\boldsymbol{\theta}_{i}.$
+For fixed $N$ and large $T$, we have
+\begin{align}
+\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}+ N^{-1}\sum^{N}_{i=1}\plim_{T \to \infty}\left(\frac{\tilde{\boldsymbol{W}}^{'}_{i} \tilde{\boldsymbol{W}}_{i}}{T}  \right)^{-1}\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)
+\end{align}
+ Then, from section $1.1$, we know that $\plim_{T \to \infty}\left( \frac{ \tilde{\boldsymbol{W}}^{'}_{i}\tilde{\boldsymbol{u}}_{i}}{T}\right)=O_{p}(1)$. Thus,  we can obtain
+\begin{align}
+\plim_{T \to \infty}\hat{\boldsymbol{\theta}}_{LSMG} =  \bar{\boldsymbol{\theta}}.
+\end{align}
+When $N \to \infty$ and $T \to \infty$ and by the law of large numbers, we can see that
+\begin{align}
+\plim_{T \to \infty, N \to \infty}\hat{\boldsymbol{\theta}}_{LSMG}=\boldsymbol{\theta}.
+\end{align}
+
+
+
+
+
+
+
+And the variance estimator of $\hat{\boldsymbol{\theta}}_{LSMG}$ is given by
+\begin{align}
+\hat{\boldsymbol{\Sigma}}_{LS,\lambda}=\frac{1}{N-1}\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \hat{\boldsymbol{\theta}}_{LSMG}\right)^{'}. \label{V1}
+\end{align}
+
+Firstly, we decompose $(\ref{V1})$ as
+\begin{align}
+\begin{split}
+&\sum^{N}_{i=1}\left( \hat{\boldsymbol{\theta}}_{LS,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}_{LSMG}\right)\left( \hat{\boldsymbol{\theta}}_{LS,i}- \boldsymbol{\theta}+\boldsymbol{\theta}-    \hat{\boldsymbol{\theta}}_{lSMG}\right)^{'}= \\
+& \sum^{N}_{i=1} \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i} \right)^{'}+\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i}  \right) -\\
+&N\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{LSMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{LSMG} \right). \label{V2}
+\end{split}
+\end{align}
+Then we can show consistent of $\hat{\boldsymbol{\Sigma}}_{LS,\lambda}$ as
+\begin{align}
+\begin{split}
+&\hat{\boldsymbol{\Sigma}}_{LS,\lambda}-\boldsymbol{\Sigma}_{LS,\lambda}=
+ \frac{1}{N-1}\sum^{N}_{i=1}\left( \boldsymbol{\lambda}_{i}\boldsymbol{\lambda}^{'}_{i}-\boldsymbol{\Sigma}_{LS,\lambda}\right) +\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i} \right)\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i} \right)^{'} \\
+&+\frac{1}{N-1}\sum^{N}_{i=1}\left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i}  \right) \boldsymbol{\lambda}_{i}+\frac{1}{N-1}\sum^{N}_{i=1}\boldsymbol{\lambda}_{i} \left(\hat{\boldsymbol{\theta}}_{LS,i}-\boldsymbol{\theta}_{i}  \right) -\\
+&\frac{N}{N-1}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{LSMG} \right)^{'}\left(\boldsymbol{\theta}-\hat{\boldsymbol{\theta}}_{LSMG} \right)  =o_{p}(1).
+\end{split}
+\end{align}
+
+Then, we can see that the asymptotic property of $\hat{\boldsymbol{\theta}}_{LSMG} $ as,
+\begin{align}
+\sqrt{N}\left(\hat{\boldsymbol{\theta}}_{LSMG}-\boldsymbol{\theta}  \right)\overset{d}{\to} N\left(\boldsymbol{0},\boldsymbol{\Sigma}_{LS,\lambda} \right).
+\end{align}
+
+
+
+
+
+
+
+
+\section{Asymptotic property of IV estimator}
+
+From the section $1$, we know the IV estimator is
+\begin{align}
+\begin{split}
+\boldsymbol{\hat{\theta}}^{b}_{i}=\left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{g}}^{b}_{i,T}, \\
+\boldsymbol{\hat{\theta}}^{b}_{i}=\boldsymbol{\theta}^{b}_{i}+\left(\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\tilde{\boldsymbol{A}}^{b}_{i,T} \right)^{-1}\tilde{\boldsymbol{A}}_{i,T}^{b'}\tilde{\boldsymbol{B}}_{i,T}^{b -1}\left(T^{-1/2}  \tilde{\boldsymbol{Z}}^{b'}_{i}\tilde{\boldsymbol{u}}^{b}_{i} \right)
+\end{split}
+\end{align}
+
+From assumption, we know $\boldsymbol{x}_{i,t}$ is strictly exogenous regressors. Then, we know $ E\left(\boldsymbol{z}_{i,t} \boldsymbol{u}_{it}  \right)=0.$
+Therefore, we can show that
+\begin{align}
+\boldsymbol{\hat{\theta}}^{b}_{i}\overset{p}{\to} \boldsymbol{\theta}^{b}_{i}.
+\end{align}
+
+
+
+
+
+
+
+
+\addcontentsline{toc}{section}{Reference}
+\renewcommand\refname{References}
+\bibliographystyle{chicago}
+\bibliography{1}
+
+
+
+
+\end{document}  \href{*}{*} 
