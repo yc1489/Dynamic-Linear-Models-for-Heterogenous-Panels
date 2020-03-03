@@ -7,7 +7,7 @@ b1=3;
 b2=1;
 b=[b1,b2]; % 1 by k 
 rho=0; % lag of x ARDL(0,1) 
-pi_u=0.25; % 0.25 or 0.75
+pi_u=0.75; % 0.25 or 0.75
 SNR=4;
 Mu1=1;
 Mu2=-0.5;
@@ -593,7 +593,7 @@ end
 
 opt_theta_IV_i_5=zeros(1+k,N);
 for ome__5=1:N
-opt_theta_IV_i_5(:,ome__5)= pinv(D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*D(:,:,ome__5))*D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*MF_x1*y_NT2(:,ome__5) ;
+opt_theta_IV_i_5(:,ome__5)= pinv(D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*MF_x1*D(:,:,ome__5))*D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*MF_x1*y_NT2(:,ome__5) ;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
