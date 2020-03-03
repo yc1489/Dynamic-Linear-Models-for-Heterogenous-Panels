@@ -1,18 +1,18 @@
 tic
 rep = 500;  
-list_T = [ 25 50 100 ]; 
-list_N = [25 50 100];  
-list_phi= [0.5 0.8]; 
+list_T = [ 25 ]; 
+list_N = [25 ];  
+list_phi= [0.8]; 
 b1=3;
 b2=1;
-b=[b1,b2];
-rho=[0];
-pi_u=0.75;
+b=[b1,b2]; % 1 by k 
+rho=0; % lag of x ARDL(0,1) 
+pi_u=0.25; % 0.25 or 0.75
 SNR=4;
 Mu1=1;
 Mu2=-0.5;
 A=0.5;
-rho_gamma_1s=0.5;
+rho_gamma_1s=0; %  0 independent factor loading; 0.5 correlated loading
 k=2;   % number of regressors
 m_x=2; % number of factors of regressor
 my=1;
@@ -140,21 +140,22 @@ x=zeros(k,N,TT);
 eta_rho_i=-0.25+(0.5)*rand([1,N]); % 1 by N heterogeneous_y
 eta_rho_bi=-sqrt(3)+2*sqrt(3)*rand([1,N]);
 phi_i= phi+  eta_rho_i;
+sig_bar_w=0.5+rand;
 v_x=zeros(k,N,TT);
 v_x(:,:,1)=zeros(k,N,1);  
 for ttt=2:TT
     for iiii=1:N
-v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,xi_ev,[k,1]); % k by N by TT
+v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,sqrt(xi_ev*sig_bar_w),[k,1]); % k by N by TT
     end 
 end
 bar_v_i=zeros(k,N);
 for tttt=1:TT
-bar_v_i=bar_v_i+v_x(:,:,tttt);
+bar_v_i=bar_v_i+(v_x(:,:,tttt).^2);
 end
-bar_v_i=bar_v_i*(TT)^(-1); % k by N
-bar_v=sum(bar_v_i,2)*(N)^(-1); % k by 1
+bar_v_i=bar_v_i/TT; % k by N
+bar_v=sum(bar_v_i,2)/N; % k by 1
 diff_bar_v=bar_v_i-bar_v*ones(1,N); % k by N
-mean_sqr_diff_bar_v=sqrt( (sum((diff_bar_v.^(2)),2)*N^(-1))); % k by 1
+mean_sqr_diff_bar_v=sqrt( (sum((diff_bar_v.^2),2)/N)); % k by 1
 Xi_b=zeros(k,N);
 for kk=1:k
     for iiiii=1:N
@@ -193,10 +194,10 @@ for g=1:N
 gamma_1= normrnd(0,1);
 gamma_2= normrnd(0,1);
 gamma_3= normrnd(0,1);
-gamma_11= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^(2))*normrnd(0,1) ;
-gamma_12= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^(2))*normrnd(0,1) ;
-gamma_21= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
-gamma_22= 0.5*normrnd(0,1)+sqrt(1-0.5^(2))*normrnd(0,1) ;
+gamma_11= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^2)*normrnd(0,1) ;
+gamma_12= rho_gamma_1s*gamma_3 +sqrt(1-rho_gamma_1s^2)*normrnd(0,1) ;
+gamma_21= 0.5*normrnd(0,1)+sqrt(1-0.5^2)*normrnd(0,1) ;
+gamma_22= 0.5*normrnd(0,1)+sqrt(1-0.5^2)*normrnd(0,1) ;
 Gamma_i(:,:,g)=Gamma0+[gamma_1, gamma_11,gamma_21;gamma_2, gamma_12, gamma_22; gamma_3, 0, 0];
 end
 
@@ -204,19 +205,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fx=fy(1:m_x,:);  % m_x by TT
 
-fx1=fx(:,TT-T0+1:TT); % m by T0; F_(x)
-fx2=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
-fx3=fx(:,TT-T0-1:TT-2); % m by T0; F_(x,-2)
-fx4=fx(:,TT-T0-2:TT-3); % m by T0; F_(x,-3)
-fx5=fx(:,TT-T0-3:TT-4); % m by T0; F_(x,-4)
-fx6=fx(:,TT-T0-4:TT-5); % m by T0; F_(x,-5)
 
-MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x T0 by T0
-MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x,-1 T0 by T0
-MF_x3=eye(T0)-fx3'*((fx3*fx3')^(-1))*fx3;   %MF_x,-2 T0 by T0
-MF_x4=eye(T0)-fx4'*((fx4*fx4')^(-1))*fx4;   %MF_x,-3 T0 by T0
-MF_x5=eye(T0)-fx5'*((fx5*fx5')^(-1))*fx5;   %MF_x,-4 T0 by T0
-MF_x6=eye(T0)-fx6'*((fx6*fx6')^(-1))*fx6;   %MF_x,-5 T0 by T0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 eta_y=zeros(1,m_y,N);
@@ -233,7 +222,7 @@ for tt=2:TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
  
-  y(ii,tt)= a_i(ii,:)+([y(ii,tt-1),x(:,ii,tt)'])*theta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(xi_es*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+  y(ii,tt)= a_i(ii,:)+([y(ii,tt-1),x(:,ii,tt)'])*theta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
 end
 
@@ -243,6 +232,22 @@ end
 y_NT=y(:,TT-T0:TT); % dicard first 50 time series N by T0+1 
 y_NT1=y_NT(:,1:T0)';  % y_(i,-1); T by N
 y_NT2=y_NT(:,2:T0+1)';  % y_(i,T)  ; T by N
+
+fx1=fx(:,TT-T0+1:TT); % m by T0; F_(x)
+fx2=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
+fx3=fx(:,TT-T0-1:TT-2); % m by T0; F_(x,-2)
+fx4=fx(:,TT-T0-2:TT-3); % m by T0; F_(x,-3)
+fx5=fx(:,TT-T0-3:TT-4); % m by T0; F_(x,-4)
+fx6=fx(:,TT-T0-4:TT-5); % m by T0; F_(x,-5)
+
+MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x T0 by T0
+MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x,-1 T0 by T0
+MF_x3=eye(T0)-fx3'*((fx3*fx3')^(-1))*fx3;   %MF_x,-2 T0 by T0
+MF_x4=eye(T0)-fx4'*((fx4*fx4')^(-1))*fx4;   %MF_x,-3 T0 by T0
+MF_x5=eye(T0)-fx5'*((fx5*fx5')^(-1))*fx5;   %MF_x,-4 T0 by T0
+MF_x6=eye(T0)-fx6'*((fx6*fx6')^(-1))*fx6;   %MF_x,-5 T0 by T0
+
+
 
 x_NT=x(:,:,TT-T0-j:TT); %  dicard first 50 time series for x ; k by N by T0+1+j
 
@@ -282,26 +287,26 @@ W_it(:,:,2)=x_NT1; %  x_(i,T); N by T
 W_it(:,:,3)=x_NT2; %  x_(i,T); N by T  
 
 Z_it_1=zeros(N,T0,2*k);    % N by T by 2k
-Z_it_1(:,:,1)=x_NT1*MF_x1;   % N by T 
-Z_it_1(:,:,2)=x_NT2*MF_x1;    % N by T 
-Z_it_1(:,:,3)=x_NT1_1*MF_x2;  % N by T 
-Z_it_1(:,:,4)=x_NT2_1*MF_x2;  % N by T 
+Z_it_1(:,:,1)=(MF_x1*x_NT1')';   % N by T 
+Z_it_1(:,:,2)=(MF_x1*x_NT2')';    % N by T 
+Z_it_1(:,:,3)=(MF_x2*x_NT1_1')';  % N by T 
+Z_it_1(:,:,4)=(MF_x2*x_NT2_1')';  % N by T 
 
 Z_it_2=zeros(N,T0,1*k);           % N by T 
-Z_it_2(:,:,1)=x_NT1_2*MF_x3;  % N by T  
-Z_it_2(:,:,2)=x_NT2_2*MF_x3;  % N by T  
+Z_it_2(:,:,1)=(MF_x3*x_NT1_2')';  % N by T  
+Z_it_2(:,:,2)=(MF_x3*x_NT2_2')';  % N by T  
 
 Z_it_3=zeros(N,T0,1*k);           % N by T 
-Z_it_3(:,:,1)=x_NT1_3*MF_x4;  % N by T   
-Z_it_3(:,:,2)=x_NT2_3*MF_x4;  % N by T   
+Z_it_3(:,:,1)=(MF_x4*x_NT1_3')';  % N by T   
+Z_it_3(:,:,2)=(MF_x4*x_NT2_3')';  % N by T   
 
 Z_it_4=zeros(N,T0,1*k);           % N by T
-Z_it_4(:,:,1)=x_NT1_4*MF_x5;  % N by T
-Z_it_4(:,:,2)=x_NT2_4*MF_x5;  % N by T
+Z_it_4(:,:,1)=(MF_x5*x_NT1_4')';  % N by T
+Z_it_4(:,:,2)=(MF_x5*x_NT2_4')';  % N by T
 
 Z_it_5=zeros(N,T0,1*k);           % N by T  by 5k
-Z_it_5(:,:,1)=x_NT1_5*MF_x6;  % N by T  
-Z_it_5(:,:,2)=x_NT2_5*MF_x6;  % N by T 
+Z_it_5(:,:,1)=(MF_x6*x_NT1_5')';  % N by T  
+Z_it_5(:,:,2)=(MF_x6*x_NT2_5')';  % N by T 
 
 
 Z_it_M=zeros(N,T0,6*k);           % N by T  by 5k
@@ -359,11 +364,11 @@ P_i_5=zeros(T0,T0,N);
  P_i_M4=zeros(T0,T0,N);
  P_i_M5=zeros(T0,T0,N);
 for p=1:N
-  P_i_1(:,:,p)=  Z_1(:,:,p)*pinv(Z_1(:,:,p)'*Z_1(:,:,p))*Z_1(:,:,p)' ;% T by T   
-  P_i_2(:,:,p)=  Z_2(:,:,p)*pinv(Z_2(:,:,p)'*Z_2(:,:,p))*Z_2(:,:,p)' ;% T by T   
-  P_i_3(:,:,p)=  Z_3(:,:,p)*pinv(Z_3(:,:,p)'*Z_3(:,:,p))*Z_3(:,:,p)' ;% T by T 
-  P_i_4(:,:,p)=  Z_4(:,:,p)*pinv(Z_4(:,:,p)'*Z_4(:,:,p))*Z_4(:,:,p)' ;% T by T   
- P_i_5(:,:,p)=  Z_5(:,:,p)*pinv(Z_5(:,:,p)'*Z_5(:,:,p))*Z_5(:,:,p)' ;% T by T  
+  P_i_1(:,:,p)=  Z_1(:,:,p)*pinv(Z_1(:,:,p)'*MF_x1*Z_1(:,:,p))*Z_1(:,:,p)' ;% T by T   
+  P_i_2(:,:,p)=  Z_2(:,:,p)*pinv(Z_2(:,:,p)'*MF_x1*Z_2(:,:,p))*Z_2(:,:,p)' ;% T by T   
+  P_i_3(:,:,p)=  Z_3(:,:,p)*pinv(Z_3(:,:,p)'*MF_x1*Z_3(:,:,p))*Z_3(:,:,p)' ;% T by T 
+  P_i_4(:,:,p)=  Z_4(:,:,p)*pinv(Z_4(:,:,p)'*MF_x1*Z_4(:,:,p))*Z_4(:,:,p)' ;% T by T   
+ P_i_5(:,:,p)=  Z_5(:,:,p)*pinv(Z_5(:,:,p)'*MF_x1*Z_5(:,:,p))*Z_5(:,:,p)' ;% T by T  
  
   P_i_M2(:,:,p)=  Z_M2(:,:,p)*pinv(Z_M2(:,:,p)'*Z_M2(:,:,p))*Z_M2(:,:,p)' ;% T by T  
   P_i_M3(:,:,p)=  Z_M3(:,:,p)*pinv(Z_M3(:,:,p)'*Z_M3(:,:,p))*Z_M3(:,:,p)' ;% T by T  
@@ -383,13 +388,13 @@ end
 
 ini_theta_IV_1=zeros(1+k,N); 
 for iii1=1:N
-ini_theta_IV_1(:,iii1)= pinv(D(:,:,iii1)'*P_i_1(:,:,iii1)*D(:,:,iii1))*D(:,:,iii1)'*P_i_1(:,:,iii1)*y_NT2(:,iii1);
+ini_theta_IV_1(:,iii1)= pinv(D(:,:,iii1)'*MF_x1*P_i_1(:,:,iii1)*MF_x1*D(:,:,iii1))*D(:,:,iii1)'*MF_x1*P_i_1(:,:,iii1)*MF_x1*y_NT2(:,iii1);
 end
 
-fist_stage_theta=zeros(2,N); 
-for iii2=1:N
-fist_stage_theta(:,iii2)= pinv(H2(:,:,iii2)'*H2(:,:,iii2))*H2(:,:,iii1)'*y_NT1(:,iii2);
-end
+%fist_stage_theta=zeros(2,N); 
+%for iii2=1:N
+%fist_stage_theta(:,iii2)= pinv(H2(:,:,iii2)'*H2(:,:,iii2))*H2(:,:,iii1)'*y_NT1(:,iii2);
+%end
 
 
 hat_u=zeros(T0,N);
@@ -402,9 +407,9 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 V_2=zeros(T0,1+k,N);
 for V_i_2=1:N
- %  V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_2(:,:,V_i_2)*pinv(Z_2(:,:,V_i_2)'*Z_2(:,:,V_i_2))*Z_2(:,:,V_i_2)'*D(:,:,V_i_2);  %T by 1+k ; first stage residual
+  V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*pinv(Z_1(:,:,V_i_2)'*Z_1(:,:,V_i_2))*Z_1(:,:,V_i_2)'*D(:,:,V_i_2);  %T by 1+k ; first stage residual
  %V_2(:,:,V_i_2)= D(:,:,V_i_2)-  H1(:,:,V_i_2)*pinv(H1(:,:,V_i_2)'*H1(:,:,V_i_2))*H1(:,:,V_i_2)'*D(:,:,V_i_2);  % check   T by 1+k ; first stage residual
-V_2(:,:,V_i_2)=[y_NT1(:,V_i_2)- H2(:,: ,V_i_2)*fist_stage_theta(:,V_i_2), zeros(T0,k) ];
+%V_2(:,:,V_i_2)=[y_NT1(:,V_i_2)- H2(:,: ,V_i_2)*fist_stage_theta(:,V_i_2), zeros(T0,k) ];
 end
 
 
@@ -571,24 +576,24 @@ end
 
 opt_theta_IV_i_2=zeros(1+k,N);
 for ome__2=1:N
-opt_theta_IV_i_2(:,ome__2)= pinv(D(:,:,ome__2)'*P_2(:,:,ome__2)*D(:,:,ome__2))*D(:,:,ome__2)'*P_2(:,:,ome__2)*y_NT2(:,ome__2) ;
+opt_theta_IV_i_2(:,ome__2)= pinv(D(:,:,ome__2)'*MF_x1*P_2(:,:,ome__2)*MF_x1*D(:,:,ome__2))*D(:,:,ome__2)'*MF_x1*P_2(:,:,ome__2)*MF_x1*y_NT2(:,ome__2) ;
 end
 
 opt_theta_IV_i_3=zeros(1+k,N);
 for ome__3=1:N
-opt_theta_IV_i_3(:,ome__3)= pinv(D(:,:,ome__3)'*P_3(:,:,ome__3)*D(:,:,ome__3))*D(:,:,ome__3)'*P_3(:,:,ome__3)*y_NT2(:,ome__3) ;
+opt_theta_IV_i_3(:,ome__3)= pinv(D(:,:,ome__3)'*MF_x1*P_3(:,:,ome__3)*MF_x1*D(:,:,ome__3))*D(:,:,ome__3)'*MF_x1*P_3(:,:,ome__3)*MF_x1*y_NT2(:,ome__3) ;
 end
 
 
 opt_theta_IV_i_4=zeros(1+k,N);
 for ome__4=1:N
-opt_theta_IV_i_4(:,ome__4)= pinv(D(:,:,ome__4)'*P_4(:,:,ome__4)*D(:,:,ome__4))*D(:,:,ome__4)'*P_4(:,:,ome__4)*y_NT2(:,ome__4) ;
+opt_theta_IV_i_4(:,ome__4)= pinv(D(:,:,ome__4)'*MF_x1*P_4(:,:,ome__4)*MF_x1*D(:,:,ome__4))*D(:,:,ome__4)'*MF_x1*P_4(:,:,ome__4)*MF_x1*y_NT2(:,ome__4) ;
 end
 
 
 opt_theta_IV_i_5=zeros(1+k,N);
 for ome__5=1:N
-opt_theta_IV_i_5(:,ome__5)= pinv(D(:,:,ome__5)'*P_5(:,:,ome__5)*D(:,:,ome__5))*D(:,:,ome__5)'*P_5(:,:,ome__5)*y_NT2(:,ome__5) ;
+opt_theta_IV_i_5(:,ome__5)= pinv(D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*D(:,:,ome__5))*D(:,:,ome__5)'*MF_x1*P_5(:,:,ome__5)*MF_x1*y_NT2(:,ome__5) ;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

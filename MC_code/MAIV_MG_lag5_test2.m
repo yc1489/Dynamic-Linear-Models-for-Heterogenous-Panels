@@ -1,8 +1,8 @@
 tic
 rep = 500;  
-list_T = [ 50 ]; 
-list_N = [50 ];  
-list_phi= [0.8]; 
+list_T = [ 25 ]; 
+list_N = [25];  
+list_phi= [0.5]; 
 b1=3;
 rho_b=0.4;
 rho_b1=0;
@@ -213,7 +213,7 @@ Z_it_M(:,:,6)=(F*x_NT1_5')';  % N by T1     ; lag 4
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 D=zeros(T1,1+k,N);    
-Z_1=zeros(T1,2*k,N);   % lag 1
+Z_1=zeros(T1,1+k,N);   % lag 1
 Z_2=zeros(T1,1*k,N);  % lag 2
 Z_3=zeros(T1,1*k,N);  % lag 3
 Z_4=zeros(T1,1*k,N);  % lag 4
@@ -261,7 +261,7 @@ end
 
 H=zeros(1+k,1+k,N);
 for hi=1:N
-H(:,:,hi)= Z_1(:,:,hi)'* Z_1(:,:,hi); % 1+k by 1+k
+H(:,:,hi)= Z_1(:,:,hi)'* Z_1(:,:,hi)/T1; % 1+k by 1+k
 end 
 
 ini_theta_IV_1=zeros(1+k,N); 
@@ -277,7 +277,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 V_2=zeros(T1,1+k,N);
 for V_i_2=1:N
-   V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_2(:,:,V_i_2)*pinv(Z_2(:,:,V_i_2)'*Z_2(:,:,V_i_2))*Z_2(:,:,V_i_2)'*D(:,:,V_i_2);  %T1 by 1+k ; first stage residual
+   V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*pinv(Z_1(:,:,V_i_2)'*Z_1(:,:,V_i_2))*Z_1(:,:,V_i_2)'*D(:,:,V_i_2);  %T1 by 1+k ; first stage residual
 end
 
 etai=rand(1+k,N);
