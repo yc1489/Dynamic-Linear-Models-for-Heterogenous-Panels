@@ -1,8 +1,8 @@
 tic
 rep = 500;  
-list_T = [ 25 ]; 
-list_N = [25 ];  
-list_phi= [0.5 ]; 
+list_T = [ 50 ]; 
+list_N = [50 ];  
+list_phi= [0.8 ]; 
 b1=3;
 b2=1;
 b=[b1,b2]; % 1 by k 
