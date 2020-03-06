@@ -1,8 +1,8 @@
 tic
-rep = 2000;  
-list_T = [ 25 50  100]; 
-list_N = [25  50 100];  
-list_phi= [0.5 ]; 
+rep = 500;  
+list_T = [ 25 50 100  ]; 
+list_N = [25   ];  
+list_phi= [0.5]; 
 b1=3;
 b2=1;
 b=[b1,b2]; % 1 by k 
@@ -23,8 +23,6 @@ rho_mu=0.5;
 rho_v=0.5;
 rho_b=0.4;
 xi_ev=xi_es*(SNR-(rho_v^(2)/(1-rho_v^(2))))*((b1^(2)+b2^(2))/(1-rho_v^(2)))^(-1);
-
-
 
 j=1; % lag of regressor
 Dis_T=50;
@@ -82,7 +80,7 @@ while sml<=rep
 
 
 eta_rho_i=-0.2+(0.4)*rand([1,N]); % 1 by N heterogeneous_y U(-0.2,0.2)
-eta_rho_bi=-sqrt(3)+2*sqrt(3)*rand([k,N]);
+eta_rho_bi=-sqrt(3)+2*sqrt(3)*rand([1,N]);
 
 
 phi_i= phi+  eta_rho_i;
@@ -93,14 +91,13 @@ for ttt=2:TT
     for iiii=1:N
 %v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,sqrt(xi_ev*sig_bar_w(iiii,1)),[k,1]); % k by N by TT
 v_x(:,iiii,ttt)=0.5*v_x(:,iiii,ttt-1)+sqrt((1-0.5^(2)))*normrnd(0,sqrt(xi_ev),[k,1]); % k by N by TT
-
     end 
 end
 bar_v_i=zeros(k,N);
-for tttt=1:TT
+for tttt=TT-T0+1:TT
 bar_v_i=bar_v_i+(v_x(:,:,tttt).^2);
 end
-bar_v_i=bar_v_i/TT; % k by N
+bar_v_i=bar_v_i/T0; % k by N
 bar_v=sum(bar_v_i,2)/N; % k by 1
 diff_bar_v=bar_v_i-bar_v*ones(1,N); % k by N
 mean_sqr_diff_bar_v=sqrt( (sum((diff_bar_v.^2),2)/N)); % k by 1
@@ -111,7 +108,7 @@ Xi_b(kk,iiiii)= (diff_bar_v(kk,iiiii))/(mean_sqr_diff_bar_v(kk));  % k by N
     end
 end
 
-beta_i=b'*ones(1,N)+(sqrt(0.4^(2)/12)*rho_b*Xi_b+sqrt(1-rho_b^(2))*eta_rho_bi); % k by N
+beta_i=b'*ones(1,N)+(sqrt((0.4^2)/12)*rho_b*Xi_b+ones(k,1)*sqrt(1-rho_b^(2))*eta_rho_bi); % k by N
 
 theta_i=[phi_i;beta_i];   % 1+k by N  
 
@@ -171,7 +168,7 @@ for tt=2:TT
    
  x(:,ii,tt)=mu_i(ii,:)'+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
  
-   eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
+   eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)]; % 1 by m_y
  
   y(ii,tt)= a_i(ii,:)+y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
@@ -184,11 +181,12 @@ y_NT=y(:,TT-T0:TT); % dicard first 50 time series N by T0+1
 y_NT1=y_NT(:,1:T0)';  % y_(i,-1); T by N
 y_NT2=y_NT(:,2:T0+1)';  % y_(i,T)  ; T by N
 
+fy1=fy(:,TT-T0+1:TT);   % m by T0; F_y
 fx1=fx(:,TT-T0+1:TT); % m by T0; F_(x)
 fx2=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
 fx3=fx(:,TT-T0-1:TT-2); % m by T0; F_(x,-2)
 
-
+MF_y=eye(T0)-fy1'*((fy1*fy1')^(-1))*fy1;  % MF_y T0 by T0
 MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x T0 by T0
 MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x,-1 T0 by T0
 MF_x3=eye(T0)-fx3'*((fx3*fx3')^(-1))*fx3;   %MF_x,-2 T0 by T0
@@ -251,15 +249,19 @@ Z_2=zeros(T0,3*k,N);  % lag 2
 
 for iti=1:N
   D(:,:,iti)=[W_it(iti,:,1)', W_it(iti,:,2)', W_it(iti,:,3)']; % T by 1+k
-  Z_1(:,:,iti)=[Z_it_1(iti,:,1)', Z_it_1(iti,:,2)', Z_it_1(iti,:,3)', Z_it_1(iti,:,4)'];  %  T by 2k by N  lag 1
+  Z_1(:,:,iti)=[Z_it_1(iti,:,1)', Z_it_1(iti,:,2)',Z_it_1(iti,:,3)', Z_it_1(iti,:,4)' ];  %  T by 2k by N  lag 1
   Z_2(:,:,iti)= [Z_it_2(iti,:,1)',Z_it_2(iti,:,2)',Z_it_2(iti,:,3)',Z_it_2(iti,:,4)',Z_it_2(iti,:,5)',Z_it_2(iti,:,6)'];  %  T by k by N lag 2  
 end    
 
 
 
+
+
+
+
 ini_theta_IV_1=zeros(1+k,N); 
 for iii1=1:N
-ini_theta_IV_1(:,iii1)= pinv(D(:,:,iii1)'*MF_x1* Z_1(:,:,iii1)*pinv(Z_1(:,:,iii1)'*MF_x1*Z_1(:,:,iii1))*Z_1(:,:,iii1)'*MF_x1*D(:,:,iii1))*D(:,:,iii1)'*MF_x1*Z_1(:,:,iii1)*pinv(Z_1(:,:,iii1)'*MF_x1*Z_1(:,:,iii1))*Z_1(:,:,iii1)'*MF_x1*y_NT2(:,iii1);
+ini_theta_IV_1(:,iii1)= pinv((D(:,:,iii1)'*MF_x1* Z_1(:,:,iii1)/T0)*pinv(Z_1(:,:,iii1)'*MF_x1*Z_1(:,:,iii1)/T0)*(Z_1(:,:,iii1)'*MF_x1*D(:,:,iii1)/T0))*(D(:,:,iii1)'*MF_x1*Z_1(:,:,iii1)/T0)*pinv(Z_1(:,:,iii1)'*MF_x1*Z_1(:,:,iii1)/T0)*(Z_1(:,:,iii1)'*MF_x1*y_NT2(:,iii1)/T0);
 end
 
 sec_theta_IV_1=zeros(1+k,N); 
