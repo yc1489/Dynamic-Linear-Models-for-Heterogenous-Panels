@@ -1,6 +1,6 @@
-rep = 2000;  
-list_T = [25 50 100 200]; 
-list_N = [25 50 100 200];  
+rep = 250;  
+list_T = [25 ]; 
+list_N = [25 ];  
 list_phi= [0.5]; 
 b1=3;
 b2=1;
@@ -59,7 +59,7 @@ while sml<=rep
 y=zeros(N,TT);
 x=zeros(k,N,TT);
 
-eta_rho_i=-0.25+(0.5)*rand([1,N]); % 1 by N
+eta_rho_i=-0.25+(0.5)*rand([1,N]); % 1 by N heterogeneous_y
 eta_rho_bi=-sqrt(3)+2*sqrt(3)*rand([1,N]);
 phi_i= phi+eta_rho_i;  % phi heterogeneous; 1 by N
 v_x=zeros(k,N,TT);

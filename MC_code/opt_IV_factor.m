@@ -1,7 +1,7 @@
 tic
 rep = 500;  
-list_T = [ 25  ]; 
-list_N = [50  ];  
+list_T = [ 25 ]; 
+list_N = [50 ];  
 list_phi= [0.5 ]; 
 b1=3;
 b2=1;
@@ -256,12 +256,12 @@ for tt=2:TT
     for ii=1:N
         
    eta_x(:,:,ii)= [Gamma_i(1,2,ii),Gamma_i(1,3,ii);Gamma_i(2,2,ii),Gamma_i(2,3,ii)];     
-   
- x(:,ii,tt)=mu_i(ii,:)'+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
+   % mu_i(ii,:)'+
+ x(:,ii,tt)=rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
- 
-  y(ii,tt)= a_i(ii,:)+y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+ % a_i(ii,:)+
+  y(ii,tt)= y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
 end
 

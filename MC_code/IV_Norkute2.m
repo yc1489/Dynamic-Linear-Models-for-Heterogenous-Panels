@@ -1,7 +1,7 @@
 tic
 rep = 500;  
-list_T = [ 35 50 100 ]; 
-list_N = [25 50 100  ];  
+list_T = [ 25 50]; 
+list_N = [25  50];  
 list_phi= [0.5]; 
 b1=3;
 b2=1;
@@ -104,8 +104,8 @@ Xi_b(kk,iiiii)= (diff_bar_v(kk,iiiii))/(mean_sqr_diff_bar_v(kk));  % k by N
     end
 end
 
-% beta_i=b'*ones(1,N)+(sqrt((0.4^2)/12)*rho_b*Xi_b+ones(k,1)*sqrt(1-rho_b^(2))*eta_rho_bi); % k by N
-beta_i=b'*ones(1,N);
+ beta_i=b'*ones(1,N)+(sqrt((0.4^2)/12)*rho_b*Xi_b+ones(k,1)*sqrt(1-rho_b^(2))*eta_rho_bi); % k by N
+%beta_i=b'*ones(1,N);
 
 
 
@@ -164,36 +164,86 @@ for tt=2:TT
     for ii=1:N
         
    eta_x(:,:,ii)= [Gamma_i(1,2,ii),Gamma_i(1,3,ii);Gamma_i(2,2,ii),Gamma_i(2,3,ii)];     
- % mu_i(ii,:)'+
- x(:,ii,tt)=eta_x(:,:,ii)'*fy(1:m_x,tt)+v_x(:,ii,tt);     % k by N by TT
+ %
+ x(:,ii,tt)= mu_i(ii,:)'+eta_x(:,:,ii)'*fy(1:m_x,tt)+v_x(:,ii,tt);     % k by N by TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)]; % 1 by m_y
-%  a_i(ii,:)+
-  y(ii,tt)=y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+% 
+  y(ii,tt)= a_i(ii,:)+y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
 end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+F_11=zeros(1,T1);
+for tt=1:T1
+F_11(:,tt)=sqrt((T0-tt)/(T0-tt+1));
+end
+
+F_1=diag(F_11);
+
+F_2=zeros(T1,T0);
+for bt=1:T0
+ A2=T1:-1:bt;   
+ B=-1*A2.^-1;  
+ C=diag(B);
+F_2= F_2+[zeros(T1,bt) [C;zeros(bt-1,T0-bt)]] ;
+end
+F_2=[diag(ones(1,T1)) zeros(T1,1)]+F_2;
+F=  F_1*F_2;   % T0-1 by T0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fx=fy(1:m_x, :);  % m_x by TT
 y_NT=y(:,TT-T0:TT); % dicard first 50 time series N by T0+1 
-y_NT1=y_NT(:,1:T0)';  % y_(i,-1); T by N
-y_NT2=y_NT(:,2:T0+1)';  % y_(i,T)  ; T by N
+
+%bar_yi=sum(y_nt,2)/(T0+1);  % N by 1
+%bar_yt=sum(y_nt,1)/N;     %  1 by T0+1+j
+%bar_y=sum(bar_yi,1)/N;    %  1 by 1   
+
+%y_NT=y_nt-bar_yi*ones(1,T0+1)-ones(N,1)*bar_yt+bar_y*ones(N,T0+1);
 
 
 
-fy1=fy(:,TT-T0+1:TT);   % m by T0; F_y
-fx1=fx(:,TT-T0+1:TT); % m by T0; F_(x)
-fx2=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
-fx3=fx(:,TT-T0-1:TT-2); % m by T0; F_(x,-2)
+y_NT1=F*y_NT(:,1:T0)';  % y_(i,-1); T by N
+y_NT2=F*y_NT(:,2:T0+1)';  % y_(i,T)  ; T by N
 
-MF_y=eye(T0)-fy1'*((fy1*fy1')^(-1))*fy1;  % MF_y T0 by T0
-MF_x1=eye(T0)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x T0 by T0
-MF_x2=eye(T0)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x,-1 T0 by T0
-MF_x3=eye(T0)-fx3'*((fx3*fx3')^(-1))*fx3;   %MF_x,-2 T0 by T0
+
+
+%fy1=fy(:,TT-T0+1:TT);   % m by T0; F_y
+%fx1=fx(:,TT-T0+1:TT); % m by T0; F_(x)
+%fx2=fx(:,TT-T0:TT-1); % m by T0; F_(x,-1)
+%fx3=fx(:,TT-T0-1:TT-2); % m by T0; F_(x,-2)
+
+fx1=fx(:,TT-T0+2:TT); % m by T0; F_(x)
+fx2=fx(:,TT-T0+1:TT-1); % m by T0; F_(x,-1)
+fx3=fx(:,TT-T0:TT-2); % m by T0; F_(x,-2)
+
+%MF_y=eye(T0)-fy1'*((fy1*fy1')^(-1))*fy1;  % MF_y T0 by T0
+MF_x1=eye(T1)-fx1'*((fx1*fx1')^(-1))*fx1;  % MF_x T0 by T0
+MF_x2=eye(T1)-fx2'*((fx2*fx2')^(-1))*fx2;   %MF_x,-1 T0 by T0
+MF_x3=eye(T1)-fx3'*((fx3*fx3')^(-1))*fx3;   %MF_x,-2 T0 by T0
 
 
 x_NT=x(:,:,TT-T0-j:TT); %  dicard first 50 time series for x ; k by N by T0+1+j
+%sum_xt=zeros(k,N);
+%for bi=1:T0+1+j
+%sum_xt=sum_xt+x_NT(:,:,bi);  
+%end
+%bar_xi=sum_xt/(T0+1+j);    % k by N
+%sum_xi=zeros(k, T0+1+j);
+%for bt=1:N
+%sum_xi=sum_xi+x_NT(:,bt,:); 
+%end
+%bar_xt=sum_xi/N;    % k by T0+1+j
+%bar_x=sum(bar_xi,2)/N;  % 1 by 1 
+
+
+
+
 
 x_NT1=zeros(N, T0);
 x_NT2=zeros(N, T0);
@@ -210,16 +260,21 @@ x_NT2_1(:,it)=x_NT(2,:,it+j);   % x_(i,-1) ; N by T0
 x_NT1_2(:,it)=x_NT(1,:,it+(j-1));   % x_(i,-2) ; N by T0 
 x_NT2_2(:,it)=x_NT(2,:,it+(j-1));   % x_(i,-2) ; N by T0 
 end
-
+%x_NT1= x_NT1-bar_xi(1,:)'-bar_xt(1,3:T0+1+j)+bar_x(1,:);
+%x_NT2=x_NT2-bar_xi(2,:)'-bar_xt(2,3:T0+1+j)+bar_x(2,:);
+%x_NT1_1=x_NT1_1-bar_xi(1,:)'-bar_xt(1,2:T0+j)+bar_x(1,:);
+%x_NT2_1=x_NT2_1-bar_xi(2,:)'-bar_xt(2,2:T0+j)+bar_x(2,:);
+%x_NT1_2=x_NT1_2-bar_xi(1,:)'-bar_xt(1,1:T0)+bar_x(1,:);
+%x_NT2_2=x_NT2_2-bar_xi(2,:)'-bar_xt(2,1:T0)+bar_x(2,:);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-D=zeros(T0,1+k,N);    
-Z_1=zeros(T0,2*k,N);   % lag 1
-Z_2=zeros(T0,3*k,N);  % lag 2
+D=zeros(T1,1+k,N);    
+Z_1=zeros(T1,2*k,N);   % lag 1
+Z_2=zeros(T1,3*k,N);  % lag 2
 for iti=1:N
-D(:,:,iti)=[y_NT1(:,iti), x_NT1(iti,:)' ,x_NT2(iti,:)'  ];   %T by 1+k
-Z_1(:,:,iti)=[MF_x1*x_NT1(iti,:)', MF_x1*x_NT2(iti,:)',MF_x2*x_NT1_1(iti,:)' ,MF_x2*x_NT2_1(iti,:)'  ] ;  % T by 2k   
-Z_2(:,:,iti)=[MF_x1*x_NT1(iti,:)', MF_x1*x_NT2(iti,:)',MF_x2*x_NT1_1(iti,:)' ,MF_x2*x_NT2_1(iti,:)',MF_x3*x_NT1_2(iti,:)',MF_x3*x_NT2_2(iti,:)'] ; 
+D(:,:,iti)=[y_NT1(:,iti), F*x_NT1(iti,:)' ,F*x_NT2(iti,:)'  ];   %T by 1+k
+Z_1(:,:,iti)=[MF_x1*F*x_NT1(iti,:)', MF_x1*F*x_NT2(iti,:)',MF_x2*F*x_NT1_1(iti,:)' ,MF_x2*F*x_NT2_1(iti,:)'  ] ;  % T by 2k   
+Z_2(:,:,iti)=[MF_x1*F*x_NT1(iti,:)', MF_x1*F*x_NT2(iti,:)',MF_x2*F*x_NT1_1(iti,:)' ,MF_x2*F*x_NT2_1(iti,:)',MF_x3*F*x_NT1_2(iti,:)',MF_x3*F*x_NT2_2(iti,:)'] ; 
 end
 
 
