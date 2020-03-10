@@ -1,8 +1,8 @@
 tic
 rep = 500;  
-list_T = [ 50]; 
-list_N = [50 ];  
-list_phi= [0.5 ]; 
+list_T = [100]; 
+list_N = [100];  
+list_phi= [0.8 ]; 
 b1=3;
 b2=1;
 b=[b1,b2]; % 1 by k 
@@ -251,17 +251,17 @@ y=zeros(N,TT);
 x=zeros(k,N,TT);  
 y(:,1)=zeros(N,1);  
 x(:,:,1)=zeros(k,N,1);  
-
+ esiption=zeros(N,TT);
 for tt=2:TT
     for ii=1:N
-        
+     esiption(ii,tt)=(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);   
    eta_x(:,:,ii)= [Gamma_i(1,2,ii),Gamma_i(1,3,ii);Gamma_i(2,2,ii),Gamma_i(2,3,ii)];     
-   % mu_i(ii,:)'+
- x(:,ii,tt)=rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
+  
+ x(:,ii,tt)=mu_i(ii,:)'+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt)+ esiption(ii,tt-1);     % k by N by TT
  
    eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
- % a_i(ii,:)+
-  y(ii,tt)= y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+
+  y(ii,tt)= a_i(ii,:)+y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+ esiption(ii,tt);    % N by TT    
     end
 end
 
