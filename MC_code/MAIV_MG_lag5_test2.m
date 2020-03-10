@@ -1,6 +1,6 @@
 tic
-rep = 500;  
-list_T = [ 25 ]; 
+rep = 50;  
+list_T = [ 25 50]; 
 list_N = [25];  
 list_phi= [0.5]; 
 b1=3;
@@ -10,7 +10,7 @@ tao=0.5;
 v_theta=-0.2;
 b=[b1];
 k=1;   % number of regressors
-j=5; % lag of regressor
+j=7; % lag of regressor
 Dis_T=50;
 %%%%%%%%%%%%%%%%%%%%%%%%
 ini_bias_mean_phi_1=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
@@ -76,6 +76,30 @@ opt_rmse_beta1_5=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_mae_phi_5=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 opt_mae_beta1_5=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+opt_bias_mean_phi_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_bias_mean_beta1_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); 
+
+opt_std_phi_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));  
+opt_std_beta1_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+
+opt_rmse_phi_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_rmse_beta1_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+
+opt_mae_phi_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_mae_beta1_6=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+opt_bias_mean_phi_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_bias_mean_beta1_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2)); 
+
+opt_std_phi_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));  
+opt_std_beta1_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+
+opt_rmse_phi_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_rmse_beta1_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+
+opt_mae_phi_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+opt_mae_beta1_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 for idx_phi=1:size(list_phi,2)     
 phi= list_phi(idx_phi);  
@@ -95,16 +119,23 @@ opt_IVMG_2=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_3=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_4=zeros(1+k,rep);   % 1+k by rep
 opt_IVMG_5=zeros(1+k,rep);   % 1+k by rep
+opt_IVMG_6=zeros(1+k,rep);   % 1+k by rep
+opt_IVMG_7=zeros(1+k,rep);   % 1+k by rep
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 omega_IV_i_2=zeros(2,N,rep);
 omega_IV_i_3=zeros(3,N,rep);
 omega_IV_i_4=zeros(4,N,rep);
 omega_IV_i_5=zeros(5,N,rep);
+omega_IV_i_6=zeros(6,N,rep);
+omega_IV_i_7=zeros(7,N,rep);
 
  fval2=zeros(N,rep);
  fval3=zeros(N,rep);
   fval4=zeros(N,rep);
    fval5=zeros(N,rep);
+    fval6=zeros(N,rep);
+    fval7=zeros(N,rep);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 randn('state', 12345678) ;
@@ -169,8 +200,8 @@ x_NT1_2=zeros(N, T0);
 x_NT1_3=zeros(N, T0);
 x_NT1_4=zeros(N, T0);
 x_NT1_5=zeros(N, T0);
-
-
+x_NT1_6=zeros(N, T0);
+x_NT1_7=zeros(N, T0);
 for it=1:T0
 x_NT1(:,it)=x_NT(1,:,it+j+1);   % x_(i,-1) ; N by T0 
 x_NT1_1(:,it)=x_NT(1,:,it+j);   % x_(i,-1) ; N by T0 
@@ -178,6 +209,8 @@ x_NT1_2(:,it)=x_NT(1,:,it+(j-1));   % x_(i,-2) ; N by T0
 x_NT1_3(:,it)=x_NT(1,:,it+(j-2));   % x_(i,-3) ; N by T0 
 x_NT1_4(:,it)=x_NT(1,:,it+(j-3));   % x_(i,-4) ; N by T0
 x_NT1_5(:,it)=x_NT(1,:,it+(j-4));   % x_(i,-4) ; N by T0
+x_NT1_6(:,it)=x_NT(1,:,it+(j-5));   % x_(i,-4) ; N by T0
+x_NT1_7(:,it)=x_NT(1,:,it+(j-6));   % x_(i,-4) ; N by T0
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,13 +236,23 @@ Z_it_4(:,:,1)=(F*x_NT1_4')';  % N by T1  ; lag 1
 Z_it_5=zeros(N,T1,1*k);           % N by T1  by 5k
 Z_it_5(:,:,1)=(F*x_NT1_5')';  % N by T1  ; lag 1
 
-Z_it_M=zeros(N,T1,6*k);           % N by T1  by 5k
+Z_it_6=zeros(N,T1,1*k);           % N by T1  by 5k
+Z_it_6(:,:,1)=(F*x_NT1_6')';  % N by T1  ; lag 1
+
+Z_it_7=zeros(N,T1,1*k);           % N by T1  by 5k
+Z_it_7(:,:,1)=(F*x_NT1_7')';  % N by T1  ; lag 1
+
+
+Z_it_M=zeros(N,T1,8*k);           % N by T1  by 5k
 Z_it_M(:,:,1)=(F*x_NT1')';  % N by T1  
 Z_it_M(:,:,2)=(F*x_NT1_1')';  % N by T1  ; lag 1
 Z_it_M(:,:,3)=(F*x_NT1_2')';    % N by T1     ; lag 2
 Z_it_M(:,:,4)=(F*x_NT1_3')';  % N by T1    ; lag 3
 Z_it_M(:,:,5)=(F*x_NT1_4')';  % N by T1     ; lag 4
 Z_it_M(:,:,6)=(F*x_NT1_5')';  % N by T1     ; lag 4
+Z_it_M(:,:,7)=(F*x_NT1_6')';  % N by T1     ; lag 4
+Z_it_M(:,:,8)=(F*x_NT1_7')';  % N by T1     ; lag 4
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 D=zeros(T1,1+k,N);    
@@ -218,11 +261,16 @@ Z_2=zeros(T1,1*k,N);  % lag 2
 Z_3=zeros(T1,1*k,N);  % lag 3
 Z_4=zeros(T1,1*k,N);  % lag 4
 Z_5=zeros(T1,1*k,N);  % lag 4
+Z_6=zeros(T1,1*k,N);  % lag 4
+Z_7=zeros(T1,1*k,N);  % lag 4
 
 Z_M2=zeros(T1,3*k,N);  % lag 4
 Z_M3=zeros(T1,4*k,N);  % lag 4
 Z_M4=zeros(T1,5*k,N);  % lag 4
 Z_M5=zeros(T1,6*k,N);  % lag 4
+Z_M6=zeros(T1,7*k,N);  % lag 4
+Z_M7=zeros(T1,8*k,N);  % lag 4
+
 for iti=1:N
   D(:,:,iti)=[W_it(iti,:,1)', W_it(iti,:,2)']; % T1 by 1+k
   Z_1(:,:,iti)=[Z_it_1(iti,:,1)', Z_it_1(iti,:,2)'];  %  T1 by 2k by N  lag 1
@@ -230,11 +278,16 @@ for iti=1:N
   Z_3(:,:,iti)=Z_it_3(iti,:,1)';  %  T1 by 1 by N lag 3
   Z_4(:,:,iti)= Z_it_4(iti,:,1)';  %  T1 by  1 by N lag 4
    Z_5(:,:,iti)= Z_it_5(iti,:,1)';  %  T1 by 1 by N lag 4
+ Z_6(:,:,iti)= Z_it_6(iti,:,1)';  %  T1 by 1 by N lag 4  
+ Z_7(:,:,iti)= Z_it_7(iti,:,1)';  %  T1 by 1 by N lag 4  
    
   Z_M2(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)'];  %  T1 by 3k by N lag 4 
   Z_M3(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)'];  %  T1 by 3k by N lag 4
   Z_M4(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)'];  %  T1 by 3k by N lag 4
   Z_M5(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)'];  %  T1 by 3k by N lag 4
+Z_M6(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)'];  %  T1 by 3k by N l
+Z_M7(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)', Z_it_M(iti,:,8)'];  %  T1 by 3k by N l
+
 end    
 
 P_i_1=zeros(T1,T1,N);
@@ -242,21 +295,32 @@ P_i_2=zeros(T1,T1,N);
 P_i_3=zeros(T1,T1,N);
 P_i_4=zeros(T1,T1,N);
 P_i_5=zeros(T1,T1,N);
+P_i_6=zeros(T1,T1,N);
+P_i_7=zeros(T1,T1,N);
+
  P_i_M2=zeros(T1,T1,N);
  P_i_M3=zeros(T1,T1,N);
  P_i_M4=zeros(T1,T1,N);
  P_i_M5=zeros(T1,T1,N);
+ P_i_M6=zeros(T1,T1,N);
+ P_i_M7=zeros(T1,T1,N);
 for p=1:N
   P_i_1(:,:,p)=  Z_1(:,:,p)*pinv(Z_1(:,:,p)'*Z_1(:,:,p))*Z_1(:,:,p)' ;% T1 by T1   
   P_i_2(:,:,p)=  Z_2(:,:,p)*pinv(Z_2(:,:,p)'*Z_2(:,:,p))*Z_2(:,:,p)' ;% T1 by T1   
   P_i_3(:,:,p)=  Z_3(:,:,p)*pinv(Z_3(:,:,p)'*Z_3(:,:,p))*Z_3(:,:,p)' ;% T1 by T1 
   P_i_4(:,:,p)=  Z_4(:,:,p)*pinv(Z_4(:,:,p)'*Z_4(:,:,p))*Z_4(:,:,p)' ;% T1 by T1   
  P_i_5(:,:,p)=  Z_5(:,:,p)*pinv(Z_5(:,:,p)'*Z_5(:,:,p))*Z_5(:,:,p)' ;% T1 by T1  
+ P_i_6(:,:,p)=  Z_6(:,:,p)*pinv(Z_6(:,:,p)'*Z_6(:,:,p))*Z_6(:,:,p)' ;% T1 by T1  
+ P_i_7(:,:,p)=  Z_7(:,:,p)*pinv(Z_7(:,:,p)'*Z_7(:,:,p))*Z_7(:,:,p)' ;% T1 by T1  
+ 
  
   P_i_M2(:,:,p)=  Z_M2(:,:,p)*pinv(Z_M2(:,:,p)'*Z_M2(:,:,p))*Z_M2(:,:,p)' ;% T1 by T1  
   P_i_M3(:,:,p)=  Z_M3(:,:,p)*pinv(Z_M3(:,:,p)'*Z_M3(:,:,p))*Z_M3(:,:,p)' ;% T1 by T1  
   P_i_M4(:,:,p)=  Z_M4(:,:,p)*pinv(Z_M4(:,:,p)'*Z_M4(:,:,p))*Z_M4(:,:,p)' ;% T1 by T1  
  P_i_M5(:,:,p)=  Z_M5(:,:,p)*pinv(Z_M5(:,:,p)'*Z_M5(:,:,p))*Z_M5(:,:,p)' ;% T1 by T1  
+ P_i_M6(:,:,p)=  Z_M6(:,:,p)*pinv(Z_M6(:,:,p)'*Z_M6(:,:,p))*Z_M6(:,:,p)' ;% T1 by T1  
+ P_i_M7(:,:,p)=  Z_M7(:,:,p)*pinv(Z_M7(:,:,p)'*Z_M7(:,:,p))*Z_M7(:,:,p)' ;% T1 by T1  
+ 
 end
 
 H=zeros(1+k,1+k,N);
@@ -310,10 +374,33 @@ V_eta_M5_2=zeros(T1,N);  %
 V_eta_M5_3=zeros(T1,N);   %
 V_eta_M5_4=zeros(T1,N);  %
 V_eta_M5_5=zeros(T1,N);  %
+
+V_eta_M6_1=zeros(T1,N);   %
+V_eta_M6_2=zeros(T1,N);  %
+V_eta_M6_3=zeros(T1,N);   %
+V_eta_M6_4=zeros(T1,N);  %
+V_eta_M6_5=zeros(T1,N);  %
+V_eta_M6_6=zeros(T1,N);  %
+
+
+V_eta_M7_1=zeros(T1,N);   %
+V_eta_M7_2=zeros(T1,N);  %
+V_eta_M7_3=zeros(T1,N);   %
+V_eta_M7_4=zeros(T1,N);  %
+V_eta_M7_5=zeros(T1,N);  %
+V_eta_M7_6=zeros(T1,N);  %
+V_eta_M7_7=zeros(T1,N);  %
+
+
+
 hat_U2=zeros(2,2,N);
 hat_U3=zeros(3,3,N);
 hat_U4=zeros(4,4,N);
-hat_U5=zeros(j,j,N);
+hat_U5=zeros(5,5,N);
+hat_U6=zeros(6,6,N);
+hat_U7=zeros(j,j,N);
+
+
 for sig=1:N
  Sigma_u_i(:,sig)=hat_u(:,sig)'*hat_u(:,sig)/T1;
  Sigma_eta_i(:,sig)= hat_v_eta_2(:,:,sig)'*hat_v_eta_2(:,:,sig)/T1;
@@ -336,24 +423,54 @@ for sig=1:N
  V_eta_M5_3(:,sig)=(P_i_M5(:,:,sig)-P_i_3(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
  V_eta_M5_4(:,sig)=(P_i_M5(:,:,sig)-P_i_4(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
  V_eta_M5_5(:,sig)=(P_i_M5(:,:,sig)-P_i_5(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ 
+ 
+ 
+  V_eta_M6_1(:,sig)=(P_i_M6(:,:,sig)-P_i_1(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);   % T1 by 1
+ V_eta_M6_2(:,sig)=(P_i_M6(:,:,sig)-P_i_2(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M6_3(:,sig)=(P_i_M6(:,:,sig)-P_i_3(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M6_4(:,sig)=(P_i_M6(:,:,sig)-P_i_4(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M6_5(:,sig)=(P_i_M6(:,:,sig)-P_i_5(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M6_6(:,sig)=(P_i_M6(:,:,sig)-P_i_6(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ 
+ 
+  V_eta_M7_1(:,sig)=(P_i_M7(:,:,sig)-P_i_1(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);   % T1 by 1
+ V_eta_M7_2(:,sig)=(P_i_M7(:,:,sig)-P_i_2(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_3(:,sig)=(P_i_M7(:,:,sig)-P_i_3(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_4(:,sig)=(P_i_M7(:,:,sig)-P_i_4(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_5(:,sig)=(P_i_M7(:,:,sig)-P_i_5(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_6(:,sig)=(P_i_M7(:,:,sig)-P_i_6(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_6(:,sig)=(P_i_M7(:,:,sig)-P_i_7(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
 
  hat_U2(:,:,sig)=[V_eta_M2_1(:,sig),V_eta_M2_2(:,sig)]'*[ V_eta_M2_1(:,sig),V_eta_M2_2(:,sig)];
  hat_U3(:,:,sig)=[V_eta_M3_1(:,sig),V_eta_M3_2(:,sig),V_eta_M3_3(:,sig)]'*[ V_eta_M3_1(:,sig),V_eta_M3_2(:,sig),V_eta_M3_3(:,sig)];
  hat_U4(:,:,sig)=[V_eta_M4_1(:,sig),V_eta_M4_2(:,sig),V_eta_M4_3(:,sig),V_eta_M4_4(:,sig)]'*[ V_eta_M4_1(:,sig),V_eta_M4_2(:,sig),V_eta_M4_3(:,sig),V_eta_M4_4(:,sig)];
  hat_U5(:,:,sig)=[V_eta_M5_1(:,sig),V_eta_M5_2(:,sig),V_eta_M5_3(:,sig),V_eta_M5_4(:,sig),V_eta_M5_5(:,sig)]'*[ V_eta_M5_1(:,sig),V_eta_M5_2(:,sig),V_eta_M5_3(:,sig),V_eta_M5_4(:,sig),V_eta_M5_5(:,sig)];
+ hat_U6(:,:,sig)=[V_eta_M6_1(:,sig),V_eta_M6_2(:,sig),V_eta_M6_3(:,sig),V_eta_M6_4(:,sig),V_eta_M6_5(:,sig),V_eta_M6_6(:,sig)]'*[ V_eta_M6_1(:,sig),V_eta_M6_2(:,sig),V_eta_M6_3(:,sig),V_eta_M6_4(:,sig),V_eta_M6_5(:,sig),V_eta_M6_6(:,sig)];
+ hat_U7(:,:,sig)=[V_eta_M7_1(:,sig),V_eta_M7_2(:,sig),V_eta_M7_3(:,sig),V_eta_M7_4(:,sig),V_eta_M7_5(:,sig),V_eta_M7_6(:,sig),V_eta_M7_7(:,sig)]'*[ V_eta_M7_1(:,sig),V_eta_M7_2(:,sig),V_eta_M7_3(:,sig),V_eta_M7_4(:,sig),V_eta_M7_5(:,sig),V_eta_M7_6(:,sig),V_eta_M7_7(:,sig)];
+
+
 end
 
 Gamma_2=[1,1;1,2];
 Gamma_3=[1,1,1;1,2,2;1,2,3];
 Gamma_4=[1,1,1,1;1,2,2,2;1,2,3,3;1,2,3,4];
 Gamma_5=[1,1,1,1,1;1,2,2,2,2;1,2,3,3,3;1,2,3,4,4;1,2,3,4,5];
+Gamma_6=[1,1,1,1,1,1;1,2,2,2,2,2;1,2,3,3,3,3;1,2,3,4,4,4;1,2,3,4,5,5;1,2,3,4,5,6];
+Gamma_7=[1,1,1,1,1,1,1;1,2,2,2,2,2,2;1,2,3,3,3,3,3;1,2,3,4,4,4,4;1,2,3,4,5,5,5;1,2,3,4,5,6,6;1,2,3,4,5,6,7];
+
 K_2=ones(2,1);
 K_3=ones(3,1);
 K_4=ones(4,1);
-K_5=ones(j,1);
+K_5=ones(5,1);
+K_6=ones(6,1);
+K_7=ones(j,1);
 j2=2;
  j3=3;
  j4=4;
+ j5=5;
+ j6=6;
+ j7=7;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for ome_i_2=1:N
     omega_ini_2 = rand(2,1);
@@ -400,17 +517,54 @@ end
 
 
 for ome_i_5=1:N
-    omega_ini_5 = rand(j,1);
-    lq_5 = [zeros(j,1)];
-    uq_5 = [ones(j,1)];
+    omega_ini_5 = rand(5,1);
+    lq_5 = [zeros(5,1)];
+    uq_5 = [ones(5,1)];
     sigma_etau_i=sigma_etau(:,ome_i_5); 
     Sigma_u_i_i=Sigma_u_i(:,ome_i_5);
     Sigma_eta_i_i=Sigma_eta_i(:,ome_i_5);
     hat_U_i_5=hat_U5(:,:,ome_i_5);    
-    [omega_5, fval_5, exitflag_5, output_5, lambda_5, hessian_5] = MAIV_opt_5(T1,K_5,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_5,Gamma_5,j,omega_ini_5,lq_5,uq_5);
+    [omega_5, fval_5, exitflag_5, output_5, lambda_5, hessian_5] = MAIV_opt_5(T1,K_5,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_5,Gamma_5,j5,omega_ini_5,lq_5,uq_5);
  omega_IV_i_5(:,ome_i_5,sml)=omega_5;
  fval5(ome_i_5,sml)=fval_5;
 end
+
+
+
+
+for ome_i_6=1:N
+    omega_ini_6 = rand(j6,1);
+    lq_6 = [zeros(j6,1)];
+    uq_6 = [ones(j6,1)];
+    sigma_etau_i=sigma_etau(:,ome_i_6); 
+    Sigma_u_i_i=Sigma_u_i(:,ome_i_6);
+    Sigma_eta_i_i=Sigma_eta_i(:,ome_i_6);
+    hat_U_i_6=hat_U6(:,:,ome_i_6);    
+    [omega_6, fval_6, exitflag_6, output_6, lambda_6, hessian_6] = MAIV_opt_6(T1,K_6,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_6,Gamma_6,j6,omega_ini_6,lq_6,uq_6);
+ omega_IV_i_6(:,ome_i_6,sml)=omega_6;
+ fval5(ome_i_6,sml)=fval_6;
+end
+
+
+
+for ome_i_7=1:N
+    omega_ini_7 = rand(j7,1);
+    lq_7 = [zeros(j7,1)];
+    uq_7 = [ones(j7,1)];
+    sigma_etau_i=sigma_etau(:,ome_i_7); 
+    Sigma_u_i_i=Sigma_u_i(:,ome_i_7);
+    Sigma_eta_i_i=Sigma_eta_i(:,ome_i_7);
+    hat_U_i_7=hat_U7(:,:,ome_i_7);    
+    [omega_7, fval_7, exitflag_7, output_7, lambda_7, hessian_7] = MAIV_opt_7(T1,K_7,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_7,Gamma_7,j7,omega_ini_7,lq_7,uq_7);
+ omega_IV_i_7(:,ome_i_7,sml)=omega_7;
+ fval5(ome_i_7,sml)=fval_7;
+end
+
+
+
+
+
+
 
 P_2=zeros(T1,T1,N);
 for pi_2=1:N
@@ -432,6 +586,19 @@ P_5=zeros(T1,T1,N);
 for pi_5=1:N
 P_5(:,:,pi_5)= omega_IV_i_5(1,pi_5,sml)*P_i_1(:,:,pi_5)+omega_IV_i_5(2,pi_5,sml)*P_i_2(:,:,pi_5)+omega_IV_i_5(3,pi_5,sml)*P_i_3(:,:,pi_5)+omega_IV_i_5(4,pi_5,sml)*P_i_4(:,:,pi_5)+omega_IV_i_5(5,pi_5,sml).*P_i_5(:,:,pi_5) ;
 end
+
+
+P_6=zeros(T1,T1,N);
+for pi_6=1:N
+P_6(:,:,pi_6)= omega_IV_i_6(1,pi_6,sml)*P_i_1(:,:,pi_6)+omega_IV_i_6(2,pi_6,sml)*P_i_2(:,:,pi_6)+omega_IV_i_6(3,pi_6,sml)*P_i_3(:,:,pi_6)+omega_IV_i_6(4,pi_6,sml)*P_i_4(:,:,pi_6)+omega_IV_i_6(5,pi_6,sml).*P_i_5(:,:,pi_6)+omega_IV_i_6(6,pi_6,sml).*P_i_6(:,:,pi_6)  ;
+end
+
+P_7=zeros(T1,T1,N);
+for pi_7=1:N
+P_7(:,:,pi_7)= omega_IV_i_7(1,pi_7,sml)*P_i_1(:,:,pi_7)+omega_IV_i_7(2,pi_7,sml)*P_i_2(:,:,pi_7)+omega_IV_i_7(3,pi_7,sml)*P_i_3(:,:,pi_7)+omega_IV_i_7(4,pi_7,sml)*P_i_4(:,:,pi_7)+omega_IV_i_7(5,pi_7,sml).*P_i_5(:,:,pi_7)+omega_IV_i_7(6,pi_7,sml).*P_i_6(:,:,pi_7)+omega_IV_i_7(7,pi_7,sml).*P_i_7(:,:,pi_7) ;
+end
+
+
 
 opt_theta_IV_i_2=zeros(1+k,N);
 for ome__2=1:N
@@ -455,6 +622,22 @@ for ome__5=1:N
 opt_theta_IV_i_5(:,ome__5)= pinv(D(:,:,ome__5)'*P_5(:,:,ome__5)*D(:,:,ome__5))*D(:,:,ome__5)'*P_5(:,:,ome__5)*y_NT2(:,ome__5) ;
 end
 
+
+opt_theta_IV_i_6=zeros(1+k,N);
+for ome__6=1:N
+opt_theta_IV_i_6(:,ome__6)= pinv(D(:,:,ome__6)'*P_6(:,:,ome__6)*D(:,:,ome__6))*D(:,:,ome__6)'*P_6(:,:,ome__6)*y_NT2(:,ome__6) ;
+end
+
+
+opt_theta_IV_i_7=zeros(1+k,N);
+for ome__7=1:N
+opt_theta_IV_i_7(:,ome__7)= pinv(D(:,:,ome__7)'*P_7(:,:,ome__7)*D(:,:,ome__7))*D(:,:,ome__7)'*P_7(:,:,ome__7)*y_NT2(:,ome__7) ;
+end
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ini_IVMG_1(:,sml)=nanmean(ini_theta_IV_1,2); 
@@ -463,6 +646,8 @@ opt_IVMG_2(:,sml)=nanmean(opt_theta_IV_i_2,2); % LS_MG
 opt_IVMG_3(:,sml)=nanmean(opt_theta_IV_i_3,2); % LS_MG
 opt_IVMG_4(:,sml)=nanmean(opt_theta_IV_i_4,2); % LS_MG
 opt_IVMG_5(:,sml)=nanmean(opt_theta_IV_i_5,2); % LS_MG
+opt_IVMG_6(:,sml)=nanmean(opt_theta_IV_i_6,2); % LS_MG
+opt_IVMG_7(:,sml)=nanmean(opt_theta_IV_i_7,2); % LS_MG
 
 sml=sml+1;
 end
@@ -471,28 +656,45 @@ ome_2=zeros(2,N);
 ome_3=zeros(3,N);
 ome_4=zeros(4,N);
 ome_5=zeros(5,N);
+ome_6=zeros(6,N);
+ome_7=zeros(7,N);
+
 fva2=zeros(N,1);
 fva3=zeros(N,1);
 fva4=zeros(N,1);
 fva5=zeros(N,1);
+fva6=zeros(N,1);
+fva7=zeros(N,1);
 for rep1=1:rep
 ome_2=ome_2+omega_IV_i_2(:,:,rep1);
 ome_3=ome_3+omega_IV_i_3(:,:,rep1);
 ome_4=ome_4+omega_IV_i_4(:,:,rep1);
 ome_5=ome_5+omega_IV_i_5(:,:,rep1);
+ome_6=ome_6+omega_IV_i_6(:,:,rep1);
+ome_7=ome_7+omega_IV_i_7(:,:,rep1);
+
 fva2= fva2 +fval2(:,rep1);
 fva3=fva3 +fval3(:,rep1);
 fva4=fva4 +fval4(:,rep1);
 fva5=fva5 +fval5(:,rep1);
+fva6=fva6 +fval6(:,rep1);
+fva7=fva7 +fval7(:,rep1);
+
 end
 ome2=nanmean(ome_2,2)/rep;
 ome3=nanmean(ome_3,2)/rep;
 ome4=nanmean(ome_4,2)/rep;
 ome5=nanmean(ome_5,2)/rep;
+ome6=nanmean(ome_6,2)/rep;
+ome7=nanmean(ome_7,2)/rep;
+
 fv2=nanmean(fva2,1)/rep;
 fv3=nanmean(fva3,1)/rep;
 fv4=nanmean(fva4,1)/rep;
 fv5=nanmean(fva5,1)/rep;
+fv6=nanmean(fva6,1)/rep;
+fv7=nanmean(fva7,1)/rep;
+
 
 
 ini_mean_phi_1= nanmean(ini_IVMG_1(1,:));
@@ -509,6 +711,14 @@ opt_mean_beta1_4= nanmean(opt_IVMG_4(2,:));
 
 opt_mean_phi_5= nanmean(opt_IVMG_5(1,:));
 opt_mean_beta1_5= nanmean(opt_IVMG_5(2,:));
+
+
+opt_mean_phi_6= nanmean(opt_IVMG_6(1,:));
+opt_mean_beta1_6= nanmean(opt_IVMG_6(2,:));
+
+
+opt_mean_phi_7= nanmean(opt_IVMG_7(1,:));
+opt_mean_beta1_7= nanmean(opt_IVMG_7(2,:));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -527,6 +737,13 @@ opt_bias_mean_beta1_4(idx_T, idx_N, idx_phi)=opt_mean_beta1_4 - b1;
 opt_bias_mean_phi_5(idx_T, idx_N, idx_phi) =opt_mean_phi_5 - phi;
 opt_bias_mean_beta1_5(idx_T, idx_N, idx_phi)=opt_mean_beta1_5 - b1;
 
+opt_bias_mean_phi_6(idx_T, idx_N, idx_phi) =opt_mean_phi_6 - phi;
+opt_bias_mean_beta1_6(idx_T, idx_N, idx_phi)=opt_mean_beta1_6 - b1;
+
+opt_bias_mean_phi_7(idx_T, idx_N, idx_phi) =opt_mean_phi_7 - phi;
+opt_bias_mean_beta1_7(idx_T, idx_N, idx_phi)=opt_mean_beta1_7 - b1;
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ini_std_phi_1(idx_T, idx_N, idx_phi) = nanstd(ini_IVMG_1(1,:));
@@ -543,6 +760,17 @@ opt_std_beta1_4(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_4(2,:));
 
 opt_std_phi_5(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_5(1,:));
 opt_std_beta1_5(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_5(2,:));
+
+opt_std_phi_6(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_6(1,:));
+opt_std_beta1_6(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_6(2,:));
+
+
+opt_std_phi_7(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_7(1,:));
+opt_std_beta1_7(idx_T, idx_N, idx_phi) = nanstd(opt_IVMG_7(2,:));
+
+
+
+
 
 
 ini_rmse_phi_1(idx_T, idx_N,idx_phi) = sqrt( nanmean( (ini_IVMG_1(1,:)-phi).^2) ); 
@@ -561,6 +789,12 @@ opt_rmse_beta1_4(idx_T, idx_N, idx_phi) = sqrt( nanmean( (opt_IVMG_4(2,:)-b1).^2
 opt_rmse_phi_5(idx_T, idx_N,idx_phi) = sqrt( nanmean( (opt_IVMG_5(1,:)-phi).^2) ); 
 opt_rmse_beta1_5(idx_T, idx_N, idx_phi) = sqrt( nanmean( (opt_IVMG_5(2,:)-b1).^2) ); 
 
+opt_rmse_phi_6(idx_T, idx_N,idx_phi) = sqrt( nanmean( (opt_IVMG_6(1,:)-phi).^2) ); 
+opt_rmse_beta1_6(idx_T, idx_N, idx_phi) = sqrt( nanmean( (opt_IVMG_6(2,:)-b1).^2) ); 
+
+opt_rmse_phi_7(idx_T, idx_N,idx_phi) = sqrt( nanmean( (opt_IVMG_7(1,:)-phi).^2) ); 
+opt_rmse_beta1_7(idx_T, idx_N, idx_phi) = sqrt( nanmean( (opt_IVMG_7(2,:)-b1).^2) ); 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ini_mae_phi_1(idx_T, idx_N,idx_phi) = median((ini_IVMG_1(1,:)-phi).^2);
 ini_mae_beta1_1(idx_T, idx_N, idx_phi) = median((ini_IVMG_1(2,:)-b1).^2);
@@ -576,6 +810,12 @@ opt_mae_beta1_4(idx_T, idx_N, idx_phi) = median((opt_IVMG_4(2,:)-b1).^2);
 
 opt_mae_phi_5(idx_T, idx_N,idx_phi) = median((opt_IVMG_5(1,:)-phi).^2);
 opt_mae_beta1_5(idx_T, idx_N, idx_phi) = median((opt_IVMG_5(2,:)-b1).^2);
+
+opt_mae_phi_6(idx_T, idx_N,idx_phi) = median((opt_IVMG_6(1,:)-phi).^2);
+opt_mae_beta1_6(idx_T, idx_N, idx_phi) = median((opt_IVMG_6(2,:)-b1).^2);
+
+opt_mae_phi_7(idx_T, idx_N,idx_phi) = median((opt_IVMG_7(1,:)-phi).^2);
+opt_mae_beta1_7(idx_T, idx_N, idx_phi) = median((opt_IVMG_7(2,:)-b1).^2);
 
 end
 end
