@@ -1,6 +1,6 @@
 tic
-rep = 50;  
-list_T = [ 25 50]; 
+rep = 500;  
+list_T = [ 100]; 
 list_N = [25];  
 list_phi= [0.5]; 
 b1=3;
@@ -130,12 +130,12 @@ omega_IV_i_5=zeros(5,N,rep);
 omega_IV_i_6=zeros(6,N,rep);
 omega_IV_i_7=zeros(7,N,rep);
 
- fval2=zeros(N,rep);
- fval3=zeros(N,rep);
-  fval4=zeros(N,rep);
-   fval5=zeros(N,rep);
-    fval6=zeros(N,rep);
-    fval7=zeros(N,rep);
+fval2=zeros(N,rep);
+fval3=zeros(N,rep);
+fval4=zeros(N,rep);
+fval5=zeros(N,rep);
+fval6=zeros(N,rep);
+fval7=zeros(N,rep);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 randn('state', 12345678) ;
@@ -440,7 +440,7 @@ for sig=1:N
  V_eta_M7_4(:,sig)=(P_i_M7(:,:,sig)-P_i_4(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
  V_eta_M7_5(:,sig)=(P_i_M7(:,:,sig)-P_i_5(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
  V_eta_M7_6(:,sig)=(P_i_M7(:,:,sig)-P_i_6(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
- V_eta_M7_6(:,sig)=(P_i_M7(:,:,sig)-P_i_7(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
+ V_eta_M7_7(:,sig)=(P_i_M7(:,:,sig)-P_i_7(:,:,sig))* D(:,:,sig)*pinv(H(:,:,sig))*etai(:,sig);
 
  hat_U2(:,:,sig)=[V_eta_M2_1(:,sig),V_eta_M2_2(:,sig)]'*[ V_eta_M2_1(:,sig),V_eta_M2_2(:,sig)];
  hat_U3(:,:,sig)=[V_eta_M3_1(:,sig),V_eta_M3_2(:,sig),V_eta_M3_3(:,sig)]'*[ V_eta_M3_1(:,sig),V_eta_M3_2(:,sig),V_eta_M3_3(:,sig)];
@@ -542,7 +542,7 @@ for ome_i_6=1:N
     hat_U_i_6=hat_U6(:,:,ome_i_6);    
     [omega_6, fval_6, exitflag_6, output_6, lambda_6, hessian_6] = MAIV_opt_6(T1,K_6,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_6,Gamma_6,j6,omega_ini_6,lq_6,uq_6);
  omega_IV_i_6(:,ome_i_6,sml)=omega_6;
- fval5(ome_i_6,sml)=fval_6;
+ fval6(ome_i_6,sml)=fval_6;
 end
 
 
@@ -557,7 +557,7 @@ for ome_i_7=1:N
     hat_U_i_7=hat_U7(:,:,ome_i_7);    
     [omega_7, fval_7, exitflag_7, output_7, lambda_7, hessian_7] = MAIV_opt_7(T1,K_7,sigma_etau_i,Sigma_u_i_i,Sigma_eta_i_i, hat_U_i_7,Gamma_7,j7,omega_ini_7,lq_7,uq_7);
  omega_IV_i_7(:,ome_i_7,sml)=omega_7;
- fval5(ome_i_7,sml)=fval_7;
+ fval7(ome_i_7,sml)=fval_7;
 end
 
 
