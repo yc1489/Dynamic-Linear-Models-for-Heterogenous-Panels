@@ -1,8 +1,8 @@
 tic
 rep = 500;  
-list_T = [ 100]; 
+list_T = [ 25]; 
 list_N = [25];  
-list_phi= [0.5]; 
+list_phi= [0.8]; 
 b1=3;
 rho_b=0.4;
 rho_b1=0;
@@ -282,11 +282,11 @@ for iti=1:N
  Z_7(:,:,iti)= Z_it_7(iti,:,1)';  %  T1 by 1 by N lag 4  
    
   Z_M2(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)'];  %  T1 by 3k by N lag 4 
-  Z_M3(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)'];  %  T1 by 3k by N lag 4
-  Z_M4(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)'];  %  T1 by 3k by N lag 4
-  Z_M5(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)'];  %  T1 by 3k by N lag 4
-Z_M6(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)'];  %  T1 by 3k by N l
-Z_M7(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)', Z_it_M(iti,:,8)'];  %  T1 by 3k by N l
+  Z_M3(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)'];  %  T1 by 4k by N lag 4
+  Z_M4(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)'];  %  T1 by 5k by N lag 4
+  Z_M5(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)'];  %  T1 by 6k by N lag 4
+Z_M6(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)'];  %  T1 by 7k by N l
+Z_M7(:,:,iti)=[Z_it_M(iti,:,1)', Z_it_M(iti,:,2)', Z_it_M(iti,:,3)', Z_it_M(iti,:,4)', Z_it_M(iti,:,5)', Z_it_M(iti,:,6)', Z_it_M(iti,:,7)', Z_it_M(iti,:,8)'];  %  T1 by 8k by N 
 
 end    
 
@@ -323,9 +323,16 @@ for p=1:N
  
 end
 
+first_stage=zeros((1+1)*k,1+k,N);
+for fir=1:N
+    first_stage(:,:,fir)=pinv( Z_1(:,:,fir)'* Z_1(:,:,fir))*Z_1(:,:,fir)'*D(:,:,fir) ; % (j+1)k by (1+k)
+end
+
+
+
 H=zeros(1+k,1+k,N);
 for hi=1:N
-H(:,:,hi)= Z_1(:,:,hi)'* Z_1(:,:,hi)/T1; % 1+k by 1+k
+H(:,:,hi)= first_stage(:,:,hi)'* first_stage(:,:,hi)/T1; % 1+k by 1+k
 end 
 
 ini_theta_IV_1=zeros(1+k,N); 
@@ -341,10 +348,11 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 V_2=zeros(T1,1+k,N);
 for V_i_2=1:N
-   V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*pinv(Z_1(:,:,V_i_2)'*Z_1(:,:,V_i_2))*Z_1(:,:,V_i_2)'*D(:,:,V_i_2);  %T1 by 1+k ; first stage residual
+   %V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*pinv(Z_1(:,:,V_i_2)'*Z_1(:,:,V_i_2))*Z_1(:,:,V_i_2)'*D(:,:,V_i_2);  %T1 by 1+k ; first stage residual
+V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*first_stage(:,:,V_i_2);
 end
 
-etai=rand(1+k,N);
+etai=rand(1+k,1)*ones(1,N);
 hat_v_eta_2=zeros(T1,1,N);
 for v_i_2=1:N
     hat_v_eta_2(:,:,v_i_2)=  V_2(:,:,v_i_2)*pinv(H(:,:,v_i_2))*etai(:,v_i_2);

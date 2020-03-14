@@ -1,13 +1,13 @@
 tic
 rep = 500;  
-list_T = [100]; 
-list_N = [100];  
+list_T = [25]; 
+list_N = [25];  
 list_phi= [0.8 ]; 
 b1=3;
 b2=1;
 b=[b1,b2]; % 1 by k 
 rho=0; % lag of x ARDL(0,1) 
-pi_u=0.75; % 0.25 or 0.75
+pi_u=0.75; % 0.25 or 0.75 
 SNR=4;
 Mu1=1;
 Mu2=-0.5;
@@ -191,7 +191,7 @@ end
 bar_v_i=bar_v_i/TT; % k by N
 bar_v=sum(bar_v_i,2)/N; % k by 1
 diff_bar_v=bar_v_i-bar_v*ones(1,N); % k by N
-mean_sqr_diff_bar_v=sqrt( (sum((diff_bar_v.^2),2)/N)); % k by 1
+mean_sqr_diff_bar_v=sqrt((sum((diff_bar_v.^2),2)/N)); % k by 1
 Xi_b=zeros(k,N);
 for kk=1:k
     for iiiii=1:N
@@ -241,8 +241,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fx=fy(1:m_x,:);  % m_x by TT
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 eta_y=zeros(1,m_y,N);
@@ -480,16 +478,26 @@ for p=1:N
  P_i_M7(:,:,p)=  Z_M7(:,:,p)*pinv(Z_M7(:,:,p)'*MF_x1*Z_M7(:,:,p))*Z_M7(:,:,p)' ;% T by T  
 end
 
+first_stage=zeros((1+1)*k,1+k,N);
+for fir=1:N
+    first_stage(:,:,fir)=pinv( Z_1(:,:,fir)'* Z_1(:,:,fir))*Z_1(:,:,fir)'*D(:,:,fir) ; % (j+1)k by (1+k)
+end
 
-H1=zeros(T1,1+k,N);
+V_2=zeros(T1,1+k,N);
+for V_i_2=1:N
+%  V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*pinv(Z_1(:,:,V_i_2)'*Z_1(:,:,V_i_2))*Z_1(:,:,V_i_2)'*D(:,:,V_i_2);  %T by 1+k ; first stage residual
+ V_2(:,:,V_i_2)= D(:,:,V_i_2)- Z_1(:,:,V_i_2)*first_stage(:,:,V_i_2);   % T1 by 1+k by N
+end
+
+%H1=zeros(T1,1+k,N);
 
 H=zeros(1+k,1+k,N);
 
 for hi=1:N
-H1(:,:,hi)= [Z_1(:,1,hi), Z_1(:,2,hi),(Z_1(:,3,hi)+Z_1(:,4,hi))/2 ];  
+%H1(:,:,hi)= [Z_1(:,1,hi), Z_1(:,2,hi),(Z_1(:,3,hi)+Z_1(:,4,hi))/2 ];  
 %H1(:,:,hi)= [Z_1(:,1,hi), Z_1(:,2,hi),Z_1(:,4,hi) ];  
 %H(:,:,hi)= Z_1(:,:,hi)'* Z_1(:,:,hi)/T0; % 2k by 2k
-H(:,:,hi)= H1(:,:,hi)'* H1(:,:,hi)/T1; % 2k by 2k
+H(:,:,hi)= first_stage(:,:,hi)'* first_stage(:,:,hi)/T1; % 1+k by 1+k
 end 
 
 ini_theta_IV_1=zeros(1+k,N); 
@@ -517,8 +525,7 @@ for V_i_2=1:N
 end
 
 
-
-etai=rand(1+k,N);
+etai=rand(1+k,1)*ones(1,N);
 hat_v_eta_2=zeros(T1,1,N);
 for v_i_2=1:N
     hat_v_eta_2(:,:,v_i_2)=  V_2(:,:,v_i_2)*pinv(H(:,:,v_i_2))*etai(:,v_i_2);
