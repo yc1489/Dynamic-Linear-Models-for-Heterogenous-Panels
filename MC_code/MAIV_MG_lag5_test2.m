@@ -2,7 +2,7 @@ tic
 rep = 500;  
 list_T = [ 25]; 
 list_N = [25];  
-list_phi= [0.8]; 
+list_phi= [0.8];   
 b1=3;
 rho_b=0.4;
 rho_b1=0;

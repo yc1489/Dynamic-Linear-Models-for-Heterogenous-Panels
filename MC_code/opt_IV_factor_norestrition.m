@@ -1,7 +1,7 @@
 tic
 rep = 500;  
-list_T = [ 50 ]; 
-list_N = [50 ];  
+list_T = [ 25 ]; 
+list_N = [25 ];  
 list_phi= [0.8 ]; 
 b1=3;
 b2=1;
@@ -216,12 +216,8 @@ mu1_i(mu,:)=Mu1+rho_mu*(a_i(mu,:)-A)+sqrt(1-rho_mu^(2))*normrnd(0,(1-phi_i(:,mu)
 mu2_i(mu,:)=Mu2+rho_mu*(a_i(mu,:)-A)+sqrt(1-rho_mu^(2))*normrnd(0,(1-phi_i(:,mu))); % interactive effect for x; N by 1
 end
 mu_i=[mu1_i,mu2_i]; % N by k
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
-fy=zeros(m_y,TT);  % creat a space for saving data factor
-fy(:,1)=zeros(m_y,1);   % setting the initial factor
-for t=2:TT
-   fy(:,t)= 0.5*fy(:,t-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_y,1]); % m_y by TT 
-end 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%5555
 Gamma0=[0.25, 0.25, -1; 0.5,-1,0.25; 0.5, 0, 0];
 
@@ -240,7 +236,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fx=fy(1:m_x,:);  % m_x by TT
+
 
 
 
@@ -252,22 +248,24 @@ x=zeros(k,N,TT);
 y(:,1)=zeros(N,1);  
 x(:,:,1)=zeros(k,N,1);  
 
+fy=zeros(m_y,TT);  % creat a space for saving data factor
+fy(:,1)=zeros(m_y,1);   % setting the initial factor
 for tt=2:TT
+     fy(:,tt)= 0.5*fy(:,tt-1)+sqrt(1-0.5^2)*normrnd(0,1,[m_y,1]); % m_y by TT 
     for ii=1:N
         
    eta_x(:,:,ii)= [Gamma_i(1,2,ii),Gamma_i(1,3,ii);Gamma_i(2,2,ii),Gamma_i(2,3,ii)];     
-   
- x(:,ii,tt)=mu_i(ii,:)'+rho*(x(:,ii,tt-1))+eta_x(:,:,ii)'*fx(:,tt)+v_x(:,ii,tt);     % k by N by TT
+ % mu_i(ii,:)'+
+ x(:,ii,tt)=eta_x(:,:,ii)'*fy(1:m_x,tt)+v_x(:,ii,tt);     % k by N by TT
  
-   eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)];
- 
-  y(ii,tt)= a_i(ii,:)+y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
+   eta_y(:,:,ii)=[Gamma_i(1,1,ii),Gamma_i(2,1,ii),Gamma_i(3,1,ii)]; % 1 by m_y
+%  a_i(ii,:)+
+  y(ii,tt)=y(ii,tt-1)*phi_i(:,ii)+x(:,ii,tt)'*beta_i(:,ii)+eta_y(:,:,ii)*fy(:,tt)+(sqrt(xi_es)*sqrt((chi2rnd(2)/2)*(tt/TT))*(chi2rnd(1)-1))/sqrt(2);    % N by TT    
     end
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+fx=fy(1:m_x,:);  % m_x by TT
 y_NT=y(:,TT-T0:TT); % dicard first 50 time series N by T0+1 
 y_NT1=y_NT(:,1:T0)';  % y_(i,-1); T by N
 y_NT2=y_NT(:,2:T0+1)';  % y_(i,T)  ; T by N
@@ -469,8 +467,7 @@ H=zeros(1+k,1+k,N);
 
 for hi=1:N
 H1(:,:,hi)= [Z_1(:,1,hi), Z_1(:,2,hi),(Z_1(:,3,hi)+Z_1(:,4,hi))/2 ];  
-%H1(:,:,hi)= [Z_1(:,1,hi), Z_1(:,2,hi),Z_1(:,4,hi) ];  
-%H(:,:,hi)= Z_1(:,:,hi)'* Z_1(:,:,hi)/T0; % 2k by 2k
+
 H(:,:,hi)= H1(:,:,hi)'* H1(:,:,hi)/T0; % 2k by 2k
 end 
 

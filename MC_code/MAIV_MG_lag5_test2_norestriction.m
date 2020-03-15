@@ -7,7 +7,7 @@ b1=3;
 rho_b=0.4;
 rho_b1=0;
 tao=0.5;
-v_theta=-0.2;
+% v_theta=-0.2;
 b=[b1];
 k=1;   % number of regressors
 j=7; % lag of regressor
@@ -103,8 +103,7 @@ opt_mae_beta1_7=zeros(size(list_T,2), size(list_N,2), size(list_phi,2));
 
 for idx_phi=1:size(list_phi,2)     
 phi= list_phi(idx_phi);  
-  b1=3;
- 
+b1=3; 
 for idx_T=1:size(list_T,2)    
 T0 = list_T(idx_T);             
 T1=T0-1; 
@@ -327,7 +326,6 @@ first_stage=zeros((1+1)*k,1+k,N);
 for fir=1:N
     first_stage(:,:,fir)=pinv( Z_1(:,:,fir)'* Z_1(:,:,fir))*Z_1(:,:,fir)'*D(:,:,fir) ; % (j+1)k by (1+k)
 end
-
 
 
 H=zeros(1+k,1+k,N);
